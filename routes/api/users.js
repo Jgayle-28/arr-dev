@@ -68,6 +68,7 @@ router.post(
           id: user.id,
         },
       };
+
       // Create token with payload and jwt secret token and expiration time
       jwt.sign(
         payload,

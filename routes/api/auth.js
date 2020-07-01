@@ -20,7 +20,6 @@ router.get('/', auth, async (req, res, next) => {
     console.log(`${err.message}`.red.inverse);
     res.status(500).send('Server Error');
   }
-  res.send('Auth route');
 });
 
 // @desc -> Login User
