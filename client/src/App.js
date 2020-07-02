@@ -37,6 +37,8 @@ function App() {
           <Route exact path='/' component={LoginPage} />
           <Switch>
             <PrivateRoute exact path='/dashboard' component={Dashboard} />
+            <PrivateRoute exact path='/profile' component={Dashboard} />
+            <PrivateRoute exact path='/users' component={Dashboard} />
             <Route exact path='/register' component={RegisterPage} />
           </Switch>
         </Fragment>

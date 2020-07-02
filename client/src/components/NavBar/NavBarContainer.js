@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { logoutUser } from '../../redux/actions/authActions';
+import { toggleMenu } from '../../redux/actions/dashboardActions';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -29,6 +30,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#fff',
     borderBottom: '1px solid #EAEDF3',
     boxShadow: 'none',
+    position: 'relative',
+    zIndex: theme.zIndex.drawer + 1,
   },
   menuBtn: {
     color: '#A5A5A7',
@@ -37,6 +40,10 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 18,
   },
   menuButton: {
+    color: '#A5A5A7',
+    margin: '10px 0 0 10px',
+    cursor: 'pointer',
+    fontSize: 18,
     marginRight: theme.spacing(2),
     [theme.breakpoints.up('md')]: {
       display: 'none',
@@ -63,7 +70,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const NavBarContainer = ({ auth: { user, loading }, logoutUser }) => {
+const NavBarContainer = ({
+  auth: { user, loading },
+  logoutUser,
+  toggleMenu,
+}) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -169,12 +180,17 @@ const NavBarContainer = ({ auth: { user, loading }, logoutUser }) => {
         <Fragment>
           <AppBar position='static' className={classes.navBar}>
             <Toolbar>
-              <IconButton
+              {/* <IconButton
+                
                 edge='start'
                 className={classes.menuButton}
-                aria-label='open drawer'>
-                <MenuIcon style={{ color: '#A5A5A7' }} />
-              </IconButton>
+                aria-label='open drawer'> */}
+              <MenuIcon
+                className={classes.menuButton}
+                style={{ fontSize: 22 }}
+                onClick={toggleMenu}
+              />
+              {/* </IconButton> */}
               <img src={logo} alt='Remnant Remains Logo' />
 
               <div className={classes.grow} />
@@ -219,4 +235,6 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-export default connect(mapStateToProps, { logoutUser })(NavBarContainer);
+export default connect(mapStateToProps, { logoutUser, toggleMenu })(
+  NavBarContainer
+);
