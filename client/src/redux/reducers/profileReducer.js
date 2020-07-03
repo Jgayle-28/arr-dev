@@ -1,7 +1,7 @@
 import { GET_PROFILE, PROFILE_ERROR, CLEAR_PROFILE } from '../actions/types';
 
 const initialState = {
-  profile: null,
+  userProfile: null,
   focusProfile: null,
   profiles: [],
   loading: true,
@@ -14,7 +14,7 @@ export default function (state = initialState, action) {
     case GET_PROFILE:
       return {
         ...state,
-        profile: payload,
+        userProfile: payload,
         loading: false,
       };
     case PROFILE_ERROR:

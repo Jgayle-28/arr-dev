@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { setAlert } from '../../redux/actions/alertActions';
 import { loginUser } from '../../redux/actions/authActions';
+import { getCurrentProfile } from '../../redux/actions/profileActions';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -52,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function LoginPageContainer({ loginUser, isAuthenticated }) {
+function LoginPageContainer({ loginUser, isAuthenticated, getCurrentProfile }) {
   const classes = useStyles();
   const [formData, setFormData] = useState({
     email: '',
@@ -70,7 +71,8 @@ function LoginPageContainer({ loginUser, isAuthenticated }) {
 
   // Redirect if logged in
   if (isAuthenticated) {
-    return <Redirect to='/dashboard' />;
+    getCurrentProfile();
+    return <Redirect to='/home' />;
   }
 
   return (
@@ -142,6 +144,8 @@ LoginPageContainer.propTypes = {
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
 });
-export default connect(mapStateToProps, { setAlert, loginUser })(
-  LoginPageContainer
-);
+export default connect(mapStateToProps, {
+  setAlert,
+  loginUser,
+  getCurrentProfile,
+})(LoginPageContainer);

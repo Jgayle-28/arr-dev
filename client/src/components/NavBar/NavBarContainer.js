@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { logoutUser } from '../../redux/actions/authActions';
 import { toggleMenu } from '../../redux/actions/dashboardActions';
@@ -49,6 +50,11 @@ const useStyles = makeStyles((theme) => ({
       display: 'none',
     },
   },
+  logo: {
+    [theme.breakpoints.down('sm')]: {
+      display: 'none',
+    },
+  },
   menuText: { color: '#A5A5A7' },
   title: {
     display: 'none',
@@ -74,6 +80,7 @@ const NavBarContainer = ({
   auth: { user, loading },
   logoutUser,
   toggleMenu,
+  history,
 }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -102,6 +109,7 @@ const NavBarContainer = ({
   const handleLogout = () => {
     logoutUser();
     handleMenuClose();
+    history.push('/');
   };
 
   const menuId = 'primary-search-account-menu';
@@ -191,7 +199,11 @@ const NavBarContainer = ({
                 onClick={toggleMenu}
               />
               {/* </IconButton> */}
-              <img src={logo} alt='Remnant Remains Logo' />
+              <img
+                src={logo}
+                alt='Remnant Remains Logo'
+                className={classes.logo}
+              />
 
               <div className={classes.grow} />
               {/* DESKTOP NAVBAR */}
@@ -235,6 +247,6 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-export default connect(mapStateToProps, { logoutUser, toggleMenu })(
-  NavBarContainer
+export default withRouter(
+  connect(mapStateToProps, { logoutUser, toggleMenu })(NavBarContainer)
 );

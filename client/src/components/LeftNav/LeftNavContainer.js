@@ -1,9 +1,11 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
+import { Route, Switch } from 'react-router-dom';
+import PrivateRoute from '../../routes/PrivateRoute';
 import { connect } from 'react-redux';
 import { toggleMenu } from '../../redux/actions/dashboardActions';
-import { Link } from 'react-router-dom';
+import { Link, NavLink, useRouteMatch } from 'react-router-dom';
 // import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
@@ -12,6 +14,12 @@ import ListItem from '@material-ui/core/ListItem';
 // import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import logo from '../../assets/img/logos/arr-logo-sm.svg';
+// Views
+import UserProfile from '../../views/Profiles/UserProfile';
+import FocusProfile from '../../views/Profiles/FocusProfile';
+import EditProfile from '../../views/Profiles/EditProfile';
+import Users from '../../views/Users';
 
 const drawerWidth = 250;
 
@@ -21,9 +29,15 @@ const useStyles = makeStyles((theme) => ({
   },
   drawer: {
     zIndex: 0,
-    borderRight: '1px solid #EAEDF3',
-    [theme.breakpoints.up('sm')]: {
+
+    [theme.breakpoints.up('md')]: {
+      borderRight: '1px solid #EAEDF3',
       width: drawerWidth,
+      flexShrink: 0,
+    },
+    [theme.breakpoints.down('sm')]: {
+      borderRight: 'none',
+      width: 0,
       flexShrink: 0,
     },
   },
@@ -34,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
       display: 'none',
     },
   },
+  logo: { margin: '20px 0' },
   menuItem: {
     color: '#3E3F42',
     letterSpacing: 0.5,
@@ -70,6 +85,8 @@ function LeftNavContainer(props) {
   const { dashboard, toggleMenu } = props;
   const classes = useStyles();
   const theme = useTheme();
+  // For routing
+  let { path, url } = useRouteMatch();
 
   // To add slight delay for menu click
   const handleLinkClick = () => {
@@ -80,26 +97,32 @@ function LeftNavContainer(props) {
 
   const menu = (
     <Fragment>
-      <div className={classes.toolbar} style={{ zIndex: 0 }} />
+      {/* Show logo in menu for mobile */}
+      {dashboard.menuOpen && (
+        <img src={logo} alt='Remnant Remains' className={classes.logo} />
+      )}
+      {/* Keeps menu under NavBar on desktop */}
+      {!dashboard.menuOpen && (
+        <div className={classes.toolbar} style={{ zIndex: 0 }} />
+      )}
       <List dense>
         <ListItem button disabled>
           <ListItemText primary='Menu' className={classes.menuText} />
         </ListItem>
         <Link
-          to='/dashboard'
+          to='/home'
           className={classes.link}
           onClick={dashboard.menuOpen ? handleLinkClick : null}>
           <ListItem
             button
             className={
-              pathname === '/dashboard'
-                ? classes.menuItemActive
-                : classes.menuItem
+              pathname === '/home' ? classes.menuItemActive : classes.menuItem
             }>
-            <ListItemText primary='Dashboard' className={classes.menuText} />
+            <ListItemText primary='Home' className={classes.menuText} />
           </ListItem>
         </Link>
         <Link
+          // to={`${props.match.path}/profile`}
           to='/profile'
           className={classes.link}
           onClick={dashboard.menuOpen ? handleLinkClick : null}>
@@ -114,6 +137,7 @@ function LeftNavContainer(props) {
           </ListItem>
         </Link>
         <Link
+          // to={`${props.match.path}/users`}
           to='/users'
           className={classes.link}
           onClick={dashboard.menuOpen ? handleLinkClick : null}>
@@ -126,9 +150,20 @@ function LeftNavContainer(props) {
           </ListItem>
         </Link>
       </List>
+      {/* <Switch>
+        <Route component={Routes} />
+        <PrivateRoute exact path='/dashboard/profile' component={UserProfile} />
+        <PrivateRoute exact path='/edit-profile' component={EditProfile} />
+        <PrivateRoute
+          exact
+          path='/user-profile/:name'
+          component={FocusProfile}
+        />
+        <PrivateRoute exact path='/users' component={Users} />
+      </Switch> */}
     </Fragment>
   );
-
+  console.log('PROPS FROM LEFT NAV', props);
   return (
     <div className={classes.drawer} aria-label='mailbox folders'>
       {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
