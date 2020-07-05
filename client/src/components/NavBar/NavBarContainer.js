@@ -78,6 +78,7 @@ const useStyles = makeStyles((theme) => ({
 
 const NavBarContainer = ({
   auth: { user, loading },
+  userProfile,
   logoutUser,
   toggleMenu,
   history,
@@ -181,6 +182,20 @@ const NavBarContainer = ({
       </MenuItem>
     </Menu>
   );
+  const userAvatar = () => {
+    let imageStr = ``;
+    if (userProfile !== null) {
+      imageStr = `data:image/jpeg;base64, ${userProfile.profilePicture}`;
+    }
+    // console.log('imageStr', imageStr);
+    return (
+      <Avatar
+        alt={user && user.name}
+        src={imageStr}
+        className={classes.orange}
+      />
+    );
+  };
 
   return (
     <div className={classes.grow}>
@@ -208,11 +223,13 @@ const NavBarContainer = ({
               <div className={classes.grow} />
               {/* DESKTOP NAVBAR */}
               <div className={classes.sectionDesktop}>
-                <Avatar
+                {/* AVATAR */}
+                {userAvatar()}
+                {/* <Avatar
                   alt={user && user.name}
-                  src={user && user.profilePicture}
+                  src={userAvatar}
                   className={classes.orange}
-                />
+                /> */}
                 <MoreIcon
                   onClick={handleProfileMenuOpen}
                   className={classes.menuBtn}
@@ -242,9 +259,11 @@ const NavBarContainer = ({
 };
 NavBarContainer.propTypes = {
   auth: PropTypes.object.isRequired,
+  userProfile: PropTypes.object.isRequired,
 };
 const mapStateToProps = (state) => ({
   auth: state.auth,
+  userProfile: state.profile.userProfile,
 });
 
 export default withRouter(

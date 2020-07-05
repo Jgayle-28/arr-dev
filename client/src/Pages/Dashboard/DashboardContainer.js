@@ -2,23 +2,24 @@ import React, { useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getCurrentProfile } from '../../redux/actions/profileActions';
-import { Route, Switch, Redirect } from 'react-router-dom';
-import PrivateRoute from '../../routes/PrivateRoute';
-import Link from 'react-router-dom';
+// import { Route, Switch, Redirect } from 'react-router-dom';
+// import PrivateRoute from '../../routes/PrivateRoute';
+// import Link from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Paper from '@material-ui/core/Paper';
+// import Paper from '@material-ui/core/Paper';
 import NavBar from '../../components/NavBar';
 import LeftNav from '../../components/LeftNav';
-import Routes from '../../routes/Routes';
-// Views
-import UserProfile from '../../views/Profiles/UserProfile';
-import FocusProfile from '../../views/Profiles/FocusProfile';
-import EditProfile from '../../views/Profiles/EditProfile';
-import CreateProfile from '../../views/Profiles/CreateProfile';
-import Users from '../../views/Users';
 import Modal from '../../components/Modal';
+import Alert from '../../components/Alert';
+// import Routes from '../../routes/Routes';
+// Views
+// import UserProfile from '../../views/Profiles/UserProfile';
+// import FocusProfile from '../../views/Profiles/FocusProfile';
+// import EditProfile from '../../views/Profiles/EditProfile';
+import NewProfileStepper from '../../views/Profiles/NewProfileStepper';
+// import Users from '../../views/Users';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,6 +45,7 @@ const DashboardContainer = (props) => {
   console.log('PROPS DASHBOARD', props);
   return (
     <Fragment>
+      <Alert />
       {auth.isAuthenticated && (
         <Fragment>
           <NavBar />
@@ -94,7 +96,7 @@ const DashboardContainer = (props) => {
               disableBackgroundClick
               hideFooter
               isOpen={true}
-              content={<CreateProfile />}
+              content={<NewProfileStepper />}
             />
           ) : null}
         </Fragment>

@@ -69,7 +69,8 @@ router.get('/me', auth, async (req, res, next) => {
 // @desc -> Create or update user profile
 // @route -> POST api/profile
 // @access -> Private
-router.post('/', [auth, upload.single('profilePicture')], async (req, res) => {
+// router.post('/', [auth, upload.single('profilePicture')], async (req, res) => {
+router.post('/', auth, async (req, res) => {
   // console.log('req.file', req.file);
   // console.log('req.body', req.body);
   // Get fields from request body
@@ -89,8 +90,9 @@ router.post('/', [auth, upload.single('profilePicture')], async (req, res) => {
   const profileFields = {};
   profileFields.user = req.user.id;
   // Check if anything was added
-  if (coverPhoto) profileFields.coverPhoto = coverPhoto;
-  if (req.file) profileFields.profilePicture = req.file.filename;
+
+  // if (coverPhoto) profileFields.coverPhoto = coverPhoto;
+  // if (profilePicture) profileFields.profilePicture = profilePicture;
   if (about) profileFields.about = about;
   if (favoriteVerse) profileFields.favoriteVerse = favoriteVerse;
   if (favoriteBook) profileFields.favoriteBook = favoriteBook;
@@ -98,6 +100,80 @@ router.post('/', [auth, upload.single('profilePicture')], async (req, res) => {
   if (youTube) profileFields.youTube = youTube;
   if (phone) profileFields.phone = phone;
   if (website) profileFields.website = website;
+
+  try {
+    let profile = await Profile.findOne({ user: req.user.id });
+    // IF there is a profile -> update
+    if (profile) {
+      // UPDATE
+      profile = await Profile.findOneAndUpdate(
+        { user: req.user.id },
+        { $set: profileFields },
+        { $new: true }
+      );
+      // Return profile
+      return res.json(profile);
+    }
+    // If there is NO profile -> Create a profile
+    profile = new Profile(profileFields);
+    // Save profile
+    await profile.save();
+    // Return the profile
+    res.json(profile);
+  } catch (err) {
+    console.log(`${err.message}`.red.inverse);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @desc -> Upload user profile-picture
+// @route -> POST api/profile/upload/profile-picture
+// @access -> Private
+router.post('/upload/profile-picture', auth, async (req, res) => {
+  // Get fields from request body
+  const { profilePicture } = req.body;
+  // Build profilePicture object
+  const profileFields = {};
+  profileFields.user = req.user.id;
+  // Check if anything was added
+  if (profilePicture) profileFields.profilePicture = profilePicture;
+
+  try {
+    let profile = await Profile.findOne({ user: req.user.id });
+    // IF there is a profile -> update
+    if (profile) {
+      // UPDATE
+      profile = await Profile.findOneAndUpdate(
+        { user: req.user.id },
+        { $set: profileFields },
+        { $new: true }
+      );
+      // Return profile
+      return res.json(profile);
+    }
+    // If there is NO profile -> Create a profile
+    profile = new Profile(profileFields);
+    // Save profile
+    await profile.save();
+    // Return the profile
+    res.json(profile);
+  } catch (err) {
+    console.log(`${err.message}`.red.inverse);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @desc -> Upload user cover photo
+// @route -> POST api/profile/upload/cover-photo
+// @access -> Private
+router.post('/upload/cover-photo', auth, async (req, res) => {
+  // Get fields from request body
+  const { coverPhoto } = req.body;
+  // Build profilePicture object
+  const profileFields = {};
+  profileFields.user = req.user.id;
+  // Check if anything was added
+  if (coverPhoto) profileFields.coverPhoto = coverPhoto;
 
   try {
     let profile = await Profile.findOne({ user: req.user.id });

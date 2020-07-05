@@ -122,6 +122,21 @@ function LeftNavContainer(props) {
           </ListItem>
         </Link>
         <Link
+          // to={`${props.match.path}/users`}
+          to='/community'
+          className={classes.link}
+          onClick={dashboard.menuOpen ? handleLinkClick : null}>
+          <ListItem
+            button
+            className={
+              pathname === '/community'
+                ? classes.menuItemActive
+                : classes.menuItem
+            }>
+            <ListItemText primary='Community' className={classes.menuText} />
+          </ListItem>
+        </Link>
+        <Link
           // to={`${props.match.path}/profile`}
           to='/profile'
           className={classes.link}
@@ -134,19 +149,6 @@ function LeftNavContainer(props) {
                 : classes.menuItem
             }>
             <ListItemText primary='Profile' className={classes.menuText} />
-          </ListItem>
-        </Link>
-        <Link
-          // to={`${props.match.path}/users`}
-          to='/users'
-          className={classes.link}
-          onClick={dashboard.menuOpen ? handleLinkClick : null}>
-          <ListItem
-            button
-            className={
-              pathname === '/users' ? classes.menuItemActive : classes.menuItem
-            }>
-            <ListItemText primary='Users' className={classes.menuText} />
           </ListItem>
         </Link>
       </List>

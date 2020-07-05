@@ -37,14 +37,14 @@ const Routes = (props) => {
       <PrivateRoute
         // exact
         // path={`${props.match.path}/user-profile/:name`}
-        path='/profile'
+        path='/user-profile'
         // path='/user-profile/:name'
         component={FocusProfile}
       />
       <PrivateRoute
         // exact
         // path={`${props.match.path}/users`}
-        path='/users'
+        path='/community'
         component={Users}
       />
     </Switch>
