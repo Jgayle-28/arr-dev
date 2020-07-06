@@ -77,6 +77,9 @@ router.post('/', auth, async (req, res) => {
   const {
     coverPhoto,
     profilePicture,
+    country,
+    city,
+    state,
     about,
     favoriteVerse,
     favoriteBook,
@@ -94,6 +97,9 @@ router.post('/', auth, async (req, res) => {
   // if (coverPhoto) profileFields.coverPhoto = coverPhoto;
   // if (profilePicture) profileFields.profilePicture = profilePicture;
   if (about) profileFields.about = about;
+  if (country) profileFields.country = country;
+  if (city) profileFields.city = city;
+  if (state) profileFields.state = state;
   if (favoriteVerse) profileFields.favoriteVerse = favoriteVerse;
   if (favoriteBook) profileFields.favoriteBook = favoriteBook;
   if (whatsApp) profileFields.whatsApp = whatsApp;

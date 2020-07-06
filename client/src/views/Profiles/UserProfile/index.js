@@ -1,2 +1,2 @@
-import UserProfileContainer from './UserProfileContainer';
-export default UserProfileContainer;
+import ProfileSwitch from './ProfileSwitch';
+export default ProfileSwitch;

@@ -47,6 +47,23 @@ const useStyles = makeStyles((theme) => ({
     height: theme.spacing(15),
     marginBottom: 15,
   },
+  submitBtn: {
+    marginLeft: 8,
+    letterSpacing: '.5px',
+    transition: 'all .2s ease',
+    backgroundColor: '#1665D8',
+    '&:hover': {
+      backgroundColor: '#1665D8',
+    },
+  },
+  textField: {
+    '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
+      borderColor: '#C6C6C6',
+    },
+    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+      borderColor: '#1665D8',
+    },
+  },
 }));
 
 const CreateProfileContainer = ({
@@ -62,6 +79,9 @@ const CreateProfileContainer = ({
     about: '',
     favoriteVerse: '',
     favoriteBook: '',
+    country: '',
+    city: '',
+    state: '',
     whatsApp: '',
     youTube: '',
     phone: '',
@@ -73,19 +93,29 @@ const CreateProfileContainer = ({
   });
   const { avatar, photo } = preview;
   const {
-    profilePicture,
-    coverPhoto,
     about,
     favoriteVerse,
     favoriteBook,
+    country,
+    city,
+    state,
     whatsApp,
     youTube,
     phone,
     website,
   } = formData;
 
-  const onChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const onChange = (e) => {
+    if (e.target.name === 'phone') {
+      let phoneNumber = e.target.value;
+      phoneNumber = phoneNumber
+        .replace(/[^\d]+/g, '')
+        .replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+      setFormData({ ...formData, [e.target.name]: phoneNumber });
+    } else {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+    }
+  };
 
   const handleImageSelect = (e) => {
     let reader = new FileReader();
@@ -168,6 +198,7 @@ const CreateProfileContainer = ({
           variant='outlined'
           size='small'
           onChange={(e) => onChange(e)}
+          className={classes.textField}
         />
         <TextField
           fullWidth
@@ -178,6 +209,7 @@ const CreateProfileContainer = ({
           variant='outlined'
           size='small'
           onChange={(e) => onChange(e)}
+          className={classes.textField}
         />
         <TextField
           fullWidth
@@ -188,6 +220,40 @@ const CreateProfileContainer = ({
           variant='outlined'
           size='small'
           onChange={(e) => onChange(e)}
+          className={classes.textField}
+        />
+        <TextField
+          fullWidth
+          name='country'
+          value={country}
+          label='Country'
+          id='outlined-size-small'
+          variant='outlined'
+          size='small'
+          onChange={(e) => onChange(e)}
+          className={classes.textField}
+        />
+        <TextField
+          fullWidth
+          name='city'
+          value={city}
+          label='City'
+          id='outlined-size-small'
+          variant='outlined'
+          size='small'
+          onChange={(e) => onChange(e)}
+          className={classes.textField}
+        />
+        <TextField
+          fullWidth
+          name='state'
+          value={state}
+          label='State'
+          id='outlined-size-small'
+          variant='outlined'
+          size='small'
+          onChange={(e) => onChange(e)}
+          className={classes.textField}
         />
         <TextField
           fullWidth
@@ -198,6 +264,7 @@ const CreateProfileContainer = ({
           variant='outlined'
           size='small'
           onChange={(e) => onChange(e)}
+          className={classes.textField}
         />
         <TextField
           fullWidth
@@ -208,6 +275,7 @@ const CreateProfileContainer = ({
           variant='outlined'
           size='small'
           onChange={(e) => onChange(e)}
+          className={classes.textField}
         />
         <TextField
           fullWidth
@@ -218,6 +286,7 @@ const CreateProfileContainer = ({
           variant='outlined'
           size='small'
           onChange={(e) => onChange(e)}
+          className={classes.textField}
         />
         <TextField
           fullWidth
@@ -228,8 +297,10 @@ const CreateProfileContainer = ({
           variant='outlined'
           size='small'
           onChange={(e) => onChange(e)}
+          className={classes.textField}
         />
         <Button
+          className={classes.submitBtn}
           fullWidth
           variant='contained'
           color='primary'

@@ -16,6 +16,15 @@ const ProfileSchema = new mongoose.Schema({
   about: {
     type: String,
   },
+  state: {
+    type: String,
+  },
+  country: {
+    type: String,
+  },
+  city: {
+    type: String,
+  },
   favoriteVerse: {
     type: String,
   },

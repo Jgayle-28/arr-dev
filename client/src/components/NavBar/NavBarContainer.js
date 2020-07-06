@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#fff',
     borderBottom: '1px solid #EAEDF3',
     boxShadow: 'none',
-    position: 'relative',
+    position: 'fixed',
     zIndex: theme.zIndex.drawer + 1,
   },
   menuBtn: {
