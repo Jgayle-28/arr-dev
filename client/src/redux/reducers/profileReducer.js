@@ -1,4 +1,10 @@
-import { GET_PROFILE, PROFILE_ERROR, CLEAR_PROFILE } from '../actions/types';
+import {
+  GET_PROFILE,
+  GET_PROFILES,
+  GET_FOCUS_PROFILE,
+  PROFILE_ERROR,
+  CLEAR_PROFILE,
+} from '../actions/types';
 
 const initialState = {
   userProfile: null,
@@ -15,6 +21,18 @@ export default function (state = initialState, action) {
       return {
         ...state,
         userProfile: payload,
+        loading: false,
+      };
+    case GET_PROFILES:
+      return {
+        ...state,
+        profiles: payload,
+        loading: false,
+      };
+    case GET_FOCUS_PROFILE:
+      return {
+        ...state,
+        focusProfile: payload,
         loading: false,
       };
     case PROFILE_ERROR:

@@ -11,7 +11,11 @@ export const AUTH_ERROR = 'AUTH_ERROR';
 export const LOGOUT_USER = 'LOGOUT_USER';
 // Profile
 export const GET_PROFILE = 'GET_PROFILE';
+export const GET_PROFILES = 'GET_PROFILES';
+export const GET_FOCUS_PROFILE = 'GET_FOCUS_PROFILE';
 export const CLEAR_PROFILE = 'CLEAR_PROFILE';
 export const PROFILE_ERROR = 'PROFILE_ERROR';
 // Dashboard
 export const TOGGLE_MENU = 'TOGGLE_MENU';
+// Account Settings
+export const DELETE_ACCOUNT = 'DELETE_ACCOUNT';

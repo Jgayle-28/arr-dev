@@ -1,11 +1,9 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
-import { Route, Switch } from 'react-router-dom';
-import PrivateRoute from '../../routes/PrivateRoute';
 import { connect } from 'react-redux';
 import { toggleMenu } from '../../redux/actions/dashboardActions';
-import { Link, NavLink, useRouteMatch } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 // import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
@@ -15,11 +13,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import logo from '../../assets/img/logos/arr-logo-sm.svg';
-// Views
-import UserProfile from '../../views/Profiles/UserProfile';
-import FocusProfile from '../../views/Profiles/FocusProfile';
-import EditProfile from '../../views/Profiles/EditProfile';
-import Users from '../../views/Users';
 
 const drawerWidth = 250;
 
@@ -85,8 +78,6 @@ function LeftNavContainer(props) {
   const { dashboard, toggleMenu } = props;
   const classes = useStyles();
   const theme = useTheme();
-  // For routing
-  let { path, url } = useRouteMatch();
 
   // To add slight delay for menu click
   const handleLinkClick = () => {
@@ -122,7 +113,6 @@ function LeftNavContainer(props) {
           </ListItem>
         </Link>
         <Link
-          // to={`${props.match.path}/users`}
           to='/community'
           className={classes.link}
           onClick={dashboard.menuOpen ? handleLinkClick : null}>
@@ -137,7 +127,6 @@ function LeftNavContainer(props) {
           </ListItem>
         </Link>
         <Link
-          // to={`${props.match.path}/profile`}
           to='/profile'
           className={classes.link}
           onClick={dashboard.menuOpen ? handleLinkClick : null}>
@@ -151,18 +140,21 @@ function LeftNavContainer(props) {
             <ListItemText primary='Profile' className={classes.menuText} />
           </ListItem>
         </Link>
+        <Link
+          to='/settings'
+          className={classes.link}
+          onClick={dashboard.menuOpen ? handleLinkClick : null}>
+          <ListItem
+            button
+            className={
+              pathname === '/settings'
+                ? classes.menuItemActive
+                : classes.menuItem
+            }>
+            <ListItemText primary='Settings' className={classes.menuText} />
+          </ListItem>
+        </Link>
       </List>
-      {/* <Switch>
-        <Route component={Routes} />
-        <PrivateRoute exact path='/dashboard/profile' component={UserProfile} />
-        <PrivateRoute exact path='/edit-profile' component={EditProfile} />
-        <PrivateRoute
-          exact
-          path='/user-profile/:name'
-          component={FocusProfile}
-        />
-        <PrivateRoute exact path='/users' component={Users} />
-      </Switch> */}
     </Fragment>
   );
   console.log('PROPS FROM LEFT NAV', props);

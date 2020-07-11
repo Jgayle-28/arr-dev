@@ -51,6 +51,7 @@ const useStyles = makeStyles({
   },
   infoText: { color: '#848484', margin: 0, padding: 0 },
   connectWrapper: { display: 'flex', flexWrap: 'wrap' },
+  // link: { color: '#848484',  '& hover': { color: '#1665D8' } },
 });
 
 const UserConnectContainer = ({ profile, user }) => {
@@ -85,7 +86,12 @@ const UserConnectContainer = ({ profile, user }) => {
                 <Avatar className={classes.iconWrapper}>
                   <IoIosMail className={classes.titleIcon} />
                 </Avatar>
-                <p className={classes.infoText}>{user.email}</p>
+                <a
+                  target='_blank'
+                  href={`mailto:${user.email}`}
+                  className={classes.infoText}>
+                  {user.email}
+                </a>
               </div>
               <Divider />
             </div>
@@ -97,7 +103,12 @@ const UserConnectContainer = ({ profile, user }) => {
                 <Avatar className={classes.iconWrapper}>
                   <IoLogoWhatsapp className={classes.titleIcon} />
                 </Avatar>
-                <p className={classes.infoText}>{profile.whatsApp}</p>
+                <a href={`https://api.whatsapp.com/send?phone=50660333807`}>
+                  {/* <a
+                  href={`https://api.whatsapp.com/send?phone=${profile.whatsApp}`}> */}
+                  {profile.whatsApp}
+                </a>
+                {/* <p className={classes.infoText}>{profile.whatsApp}</p> */}
               </div>
               {/* <Divider /> */}
             </div>
@@ -109,7 +120,9 @@ const UserConnectContainer = ({ profile, user }) => {
                 <Avatar className={classes.iconWrapper}>
                   <IoLogoYoutube className={classes.titleIcon} />
                 </Avatar>
-                <p className={classes.infoText}>{profile.youTube}</p>
+                <a target='_blank' href={profile.youTube}>
+                  {profile.youTube}
+                </a>
               </div>
               {/* <Divider /> */}
             </div>

@@ -191,6 +191,7 @@ const NavBarContainer = ({
     return (
       <Avatar
         alt={user && user.name}
+        // src='localhost:5000/public/img/users/user-5ef5554a8e016533ddc94429-profilePicture.jpeg'
         src={imageStr}
         className={classes.orange}
       />

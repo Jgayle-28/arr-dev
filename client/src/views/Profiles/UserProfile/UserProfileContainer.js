@@ -1,6 +1,7 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { getCurrentProfile } from '../../../redux/actions/profileActions';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
@@ -103,9 +104,18 @@ const useStyles = makeStyles({
   item: { display: 'flex', alignItems: 'center', margin: '10px 10px 0 0' },
 });
 
-const UserProfileContainer = ({ auth: { user }, userProfile, setEdit }) => {
+const UserProfileContainer = ({
+  auth: { user },
+  userProfile,
+  setEdit,
+  getCurrentProfile,
+}) => {
   const classes = useStyles();
   const [profileSection, setProfileSection] = useState('ABOUT');
+
+  useEffect(() => {
+    // getCurrentProfile();
+  }, []);
 
   const coverPhoto = () => {
     let imageStr = ``;
@@ -283,10 +293,13 @@ const UserProfileContainer = ({ auth: { user }, userProfile, setEdit }) => {
 UserProfileContainer.propTypes = {
   auth: PropTypes.object.isRequired,
   userProfile: PropTypes.object.isRequired,
+  getCurrentProfile: PropTypes.func.isRequired,
 };
 const mapStateToProps = (state) => ({
   auth: state.auth,
   userProfile: state.profile.userProfile,
 });
 
-export default connect(mapStateToProps)(UserProfileContainer);
+export default connect(mapStateToProps, { getCurrentProfile })(
+  UserProfileContainer
+);

@@ -1,21 +1,11 @@
 import React, { Fragment, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+// Dashboard routes
 import Routes from './routes/Routes';
-import PrivateRoute from './routes/PrivateRoute';
-// import Dashboard from './Pages/Dashboard';
-
-// Views
-import UserProfile from './views/Profiles/UserProfile';
-import FocusProfile from './views/Profiles/FocusProfile';
-import EditProfile from './views/Profiles/EditProfile';
-import Users from './views/Users';
-import Home from './views/Home';
-
 // Pages
 import LoginPage from './Pages/LoginPage';
 import RegisterPage from './Pages/RegisterPage';
 import Dashboard from './Pages/Dashboard';
-
 // Redux
 import { Provider } from 'react-redux';
 import store from './redux/store';

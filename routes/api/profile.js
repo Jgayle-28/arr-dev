@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const auth = require('../../middleware/auth');
 const colors = require('colors');
+const normalize = require('normalize-url');
 const { check, validationResult } = require('express-validator');
 
 // Models
@@ -51,7 +52,7 @@ router.get('/me', auth, async (req, res, next) => {
     // req.user.id -> is the user making request
     const profile = await Profile.findOne({
       user: req.user.id,
-    }).populate('User', ['name', 'avatar', 'profilePicture', 'coverPhoto']);
+    }).populate('user', ['name', 'avatar', 'profilePicture', 'coverPhoto']);
     // If NO profile
     if (!profile) {
       return res
@@ -103,9 +104,15 @@ router.post('/', auth, async (req, res) => {
   if (favoriteVerse) profileFields.favoriteVerse = favoriteVerse;
   if (favoriteBook) profileFields.favoriteBook = favoriteBook;
   if (whatsApp) profileFields.whatsApp = whatsApp;
-  if (youTube) profileFields.youTube = youTube;
+  if (youTube) {
+    profileFields.youTube =
+      youTube === '' ? '' : normalize(youTube, { forceHttps: true });
+  }
   if (phone) profileFields.phone = phone;
-  if (website) profileFields.website = website;
+  if (website) {
+    profileFields.website =
+      website === '' ? '' : normalize(website, { forceHttps: true });
+  }
 
   try {
     let profile = await Profile.findOne({ user: req.user.id });
@@ -212,7 +219,7 @@ router.post('/upload/cover-photo', auth, async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     // Get all profiles
-    const profiles = await Profile.find().populate('User', [
+    const profiles = await Profile.find().populate('user', [
       'name',
       'avatar',
       'profilePicture',
@@ -234,7 +241,7 @@ router.get('/user/:user_id', async (req, res) => {
     // Get all profile
     const profile = await Profile.findOne({
       user: req.params.user_id,
-    }).populate('User', ['name', 'avatar', 'profilePicture', 'coverPhoto']);
+    }).populate('user', ['name', 'avatar', 'profilePicture', 'coverPhoto']);
     if (!profile) {
       return res.status(400).json({ msg: 'Profile not found' });
     }

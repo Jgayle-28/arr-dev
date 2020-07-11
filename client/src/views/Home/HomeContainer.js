@@ -12,7 +12,6 @@ const HomeContainer = (props) => {
   return (
     <div>
       <h1 style={{ textAlign: 'center' }}>HOME</h1>
-      {/* {userProfile && userProfile !== null && <Modal />} */}
     </div>
   );
 };
