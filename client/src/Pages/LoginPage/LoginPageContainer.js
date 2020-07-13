@@ -15,15 +15,16 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import logo from '../../assets/img/header-logo.svg';
+import logo from '../../assets/img/logos/arr-logo-vert.svg';
 import Alert from '../../components/Alert';
 import { Redirect } from 'react-router-dom';
+import CustomButton from '../../components/CustomButton';
 
 function Copyright() {
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
       {'Copyright © '}
-      <Link color='inherit' href='https://material-ui.com/'>
+      <Link color='inherit' href='#!'>
         A Remnant Remains
       </Link>{' '}
       {new Date().getFullYear()}
@@ -39,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  logo: { width: 245, height: 150, marginBottom: 10 },
+  logo: { width: 245, height: 150, marginBottom: 0 },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
@@ -118,15 +119,17 @@ function LoginPageContainer({ loginUser, isAuthenticated, getCurrentProfile }) {
             control={<Checkbox value='remember' color='primary' />}
             label='Remember me'
           /> */}
-          <Button
+          <CustomButton
             type='submit'
             fullWidth
             variant='contained'
             color='primary'
             onClick={handleLogin}
-            className={classes.submit}>
+            style={{ margin: '10px 0' }}
+            // className={classes.submit}
+          >
             Sign In
-          </Button>
+          </CustomButton>
           <Link href='#'>Forgot password?</Link>
         </div>
       </div>

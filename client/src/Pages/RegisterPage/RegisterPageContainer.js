@@ -15,10 +15,11 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import logo from '../../assets/img/header-logo.svg';
+import logo from '../../assets/img/logos/arr-logo-vert.svg';
 import Alert from '../../components/Alert';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
+import CustomButton from '../../components/CustomButton';
 
 function Copyright() {
   return (
@@ -159,14 +160,16 @@ function RegisterPageContainer({ setAlert, registerUser, isAuthenticated }) {
               />
             </Grid> */}
           </Grid>
-          <Button
+          <CustomButton
             onClick={handleSubmit}
             fullWidth
             variant='contained'
             color='primary'
-            className={classes.submit}>
+            style={{ margin: '10px 0' }}
+            // className={classes.submit}
+          >
             Register
-          </Button>
+          </CustomButton>
           {/* <Grid container justify='flex-end'>
             <Grid item>
               <Link href='#' variant='body2'>

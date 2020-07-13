@@ -1,4 +1,7 @@
 {
   "mongoURI": "mongodb+srv://j123:j123@arr-dev-9caee.mongodb.net/arr-dev>?retryWrites=true&w=majority",
-  "jwtSecret": "mysecrettoken"
+  "jwtSecret": "mysecrettoken",
+  "CLOUDINARY_NAME": "dqumeqtlv",
+  "CLOUDINARY_API_KEY": "489731581132373",
+  "CLOUDINARY_API_SECRET": "Rj0gDY29iUynnTbb2CnW4SsKqy4"
 }

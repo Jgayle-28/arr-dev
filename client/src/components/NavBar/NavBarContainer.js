@@ -182,21 +182,6 @@ const NavBarContainer = ({
       </MenuItem>
     </Menu>
   );
-  const userAvatar = () => {
-    let imageStr = ``;
-    if (userProfile !== null) {
-      imageStr = `data:image/jpeg;base64, ${userProfile.profilePicture}`;
-    }
-    // console.log('imageStr', imageStr);
-    return (
-      <Avatar
-        alt={user && user.name}
-        // src='localhost:5000/public/img/users/user-5ef5554a8e016533ddc94429-profilePicture.jpeg'
-        src={imageStr}
-        className={classes.orange}
-      />
-    );
-  };
 
   return (
     <div className={classes.grow}>
@@ -225,12 +210,11 @@ const NavBarContainer = ({
               {/* DESKTOP NAVBAR */}
               <div className={classes.sectionDesktop}>
                 {/* AVATAR */}
-                {userAvatar()}
-                {/* <Avatar
+                <Avatar
                   alt={user && user.name}
-                  src={userAvatar}
-                  className={classes.orange}
-                /> */}
+                  src={userProfile && userProfile.profilePicture.url}
+                />
+
                 <MoreIcon
                   onClick={handleProfileMenuOpen}
                   className={classes.menuBtn}
@@ -239,10 +223,10 @@ const NavBarContainer = ({
 
               {/* MOBILE NAVBAR */}
               <div className={classes.sectionMobile}>
+                {/* AVATAR */}
                 <Avatar
                   alt={user && user.name}
-                  src={user && user.profilePicture}
-                  className={classes.orange}
+                  src={userProfile && userProfile.profilePicture.url}
                 />
                 <MoreIcon
                   onClick={handleMobileMenuOpen}

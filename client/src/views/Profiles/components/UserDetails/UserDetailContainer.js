@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Fade from '@material-ui/core/Fade';
 import Card from '@material-ui/core/Card';
@@ -65,76 +65,88 @@ const UserDetailContainer = ({ profile }) => {
         />
         <CardContent>
           {/* LOCATION */}
-
-          <div className={classes.sectionTitleWrapper}>
-            <Avatar className={classes.iconWrapper}>
-              <IoMdGlobe className={classes.titleIcon} />
-            </Avatar>
-            <p className={classes.title}>Location</p>
-          </div>
-          <Typography
-            variant='body2'
-            color='textSecondary'
-            component='p'
-            className={classes.detailText}>
-            <span className={classes.locationDetail}>
-              <b>City: </b>
-              {profile && profile.city}
-            </span>
-            <span className={classes.locationDetail}>
-              <b>State: </b>
-              {profile && profile.state}
-            </span>
-            <span className={classes.locationDetail}>
-              <b>Country: </b>
-              {profile && profile.country}
-            </span>
-          </Typography>
-          <Divider />
-
+          {(profile.city && profile.city.length > 0) ||
+          (profile.state && profile.state.length > 0) ||
+          (profile.country && profile.country.length > 0) ? (
+            <Fragment>
+              <div className={classes.sectionTitleWrapper}>
+                <Avatar className={classes.iconWrapper}>
+                  <IoMdGlobe className={classes.titleIcon} />
+                </Avatar>
+                <p className={classes.title}>Location</p>
+              </div>
+              <Typography
+                variant='body2'
+                color='textSecondary'
+                component='p'
+                className={classes.detailText}>
+                <span className={classes.locationDetail}>
+                  <b>City: </b>
+                  {profile && profile.city}
+                </span>
+                <span className={classes.locationDetail}>
+                  <b>State: </b>
+                  {profile && profile.state}
+                </span>
+                <span className={classes.locationDetail}>
+                  <b>Country: </b>
+                  {profile && profile.country}
+                </span>
+              </Typography>
+            </Fragment>
+          ) : null}
+          {/* // <Divider /> */}
           {/* BIO */}
-          <div>
-            <div className={classes.sectionTitleWrapper}>
-              <Avatar className={classes.iconWrapper}>
-                <TiInfoLarge className={classes.titleIcon} />
-              </Avatar>
-              {/* <FaScroll className={classes.titleIcon} /> */}
-              <p className={classes.title}>Bio</p>
+          {profile.about && (
+            <div>
+              <div className={classes.sectionTitleWrapper}>
+                <Avatar className={classes.iconWrapper}>
+                  <TiInfoLarge className={classes.titleIcon} />
+                </Avatar>
+                {/* <FaScroll className={classes.titleIcon} /> */}
+                <p className={classes.title}>Bio</p>
+              </div>
+              <p className={classes.infoText}>{profile && profile.about}</p>
+              {/* <Divider /> */}
             </div>
-            <p className={classes.infoText}>{profile && profile.about}</p>
-            <Divider />
-          </div>
+          )}
+
           {/* Favorite Verse */}
-          <div>
-            <div className={classes.sectionTitleWrapper}>
-              <Avatar className={classes.iconWrapper}>
-                <FaScroll
-                  className={classes.titleIcon}
-                  style={{ fontSize: 12 }}
-                />
-              </Avatar>
-              <p className={classes.title}>Favorite Bible Verse</p>
+          {profile.favoriteVerse && (
+            <div>
+              <div className={classes.sectionTitleWrapper}>
+                <Avatar className={classes.iconWrapper}>
+                  <FaScroll
+                    className={classes.titleIcon}
+                    style={{ fontSize: 12 }}
+                  />
+                </Avatar>
+                <p className={classes.title}>Favorite Bible Verse</p>
+              </div>
+              <p className={classes.infoText}>
+                {profile && profile.favoriteVerse}
+              </p>
+              {/* <Divider /> */}
             </div>
-            <p className={classes.infoText}>
-              {profile && profile.favoriteVerse}
-            </p>
-            <Divider />
-          </div>
+          )}
+
           {/* Favorite Book */}
-          <div>
-            <div className={classes.sectionTitleWrapper}>
-              <Avatar className={classes.iconWrapper}>
-                <IoIosBookmarks
-                  className={classes.titleIcon}
-                  style={{ fontSize: 12 }}
-                />
-              </Avatar>
-              <p className={classes.title}>Favorite Book Of The Bible</p>
+          {profile.favoriteBook && (
+            <div>
+              <div className={classes.sectionTitleWrapper}>
+                <Avatar className={classes.iconWrapper}>
+                  <IoIosBookmarks
+                    className={classes.titleIcon}
+                    style={{ fontSize: 12 }}
+                  />
+                </Avatar>
+                <p className={classes.title}>Favorite Book Of The Bible</p>
+              </div>
+              <p className={classes.infoText}>
+                {profile && profile.favoriteBook}
+              </p>
             </div>
-            <p className={classes.infoText}>
-              {profile && profile.favoriteBook}
-            </p>
-          </div>
+          )}
 
           {/* <div className={classes.sectionContainer}>
             <div className={classes.sectionTitleWrapper}>
@@ -152,7 +164,6 @@ const UserDetailContainer = ({ profile }) => {
             </Typography>
             <Divider />
           </div> */}
-
           {/* <Typography
             className={classes.title}
             color='textSecondary'

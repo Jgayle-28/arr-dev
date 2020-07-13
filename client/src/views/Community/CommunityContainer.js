@@ -4,13 +4,16 @@ import { connect } from 'react-redux';
 import { getProfiles } from '../../redux/actions/profileActions';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 import ProfileCard from './ProfileCard';
 import Spinner from '../../components/Spinner';
 
 const useStyles = makeStyles({
   communityContainer: {
     flexGrow: 1,
+    marginTop: 15,
   },
+  title: { textAlign: 'center', marginBottom: 15 },
 });
 
 const CommunityContainer = ({
@@ -27,7 +30,9 @@ const CommunityContainer = ({
 
   return (
     <div className={classes.communityContainer}>
-      <h1 style={{ textAlign: 'center' }}>Community</h1>
+      {/* <Typography variant='h4' className={classes.title}>
+        Community
+      </Typography> */}
       <Grid container spacing={2}>
         {loading ? (
           <Spinner />

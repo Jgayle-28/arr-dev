@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import CustomButton from '../../../components/CustomButton';
 import IntroText from './IntroText';
 import CreateProfileContainer from './CreateProfile/CreateProfileContainer';
+import EditProfile from '../EditProfile';
 
 const useStyles = makeStyles((theme) => ({
   container: { width: 700 },
@@ -16,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 
 const NewProfileStepperContainer = () => {
   const classes = useStyles();
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
 
   const handleNextClick = () => {
     console.log('clicked');
@@ -33,7 +35,7 @@ const NewProfileStepperContainer = () => {
       case 0:
         return <IntroText />;
       case 1:
-        return <CreateProfileContainer />;
+        return <EditProfile />;
       default:
         break;
     }
@@ -43,9 +45,12 @@ const NewProfileStepperContainer = () => {
       {getStepContent(currentStep)}
       <div className={classes.actionBtnWrapper}>
         {!currentStep > 0 && (
-          <Button onClick={handleNextClick} variant='contained' color='primary'>
-            Next
-          </Button>
+          <CustomButton
+            onClick={handleNextClick}
+            variant='contained'
+            color='primary'>
+            Create Profile
+          </CustomButton>
         )}
       </div>
     </div>

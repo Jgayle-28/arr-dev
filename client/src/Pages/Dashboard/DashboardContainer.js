@@ -92,7 +92,8 @@ const DashboardContainer = (props) => {
           </div>
           {profile && profile.userProfile === null ? (
             <Modal
-              title='Welcome to Remnant Remains'
+              // title='Welcome to Remnant Remains'
+              hideHeader
               hideCloseBtn
               disableBackgroundClick
               hideFooter

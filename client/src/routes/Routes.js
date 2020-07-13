@@ -1,5 +1,5 @@
-import React, { Fragment, useEffect } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import React from 'react';
+import { Switch } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute';
 // Views
 import Home from '../views/Home';
@@ -19,7 +19,7 @@ const Routes = (props) => {
       {/* Profile Routes */}
       <PrivateRoute path='/profile' component={UserProfile} />
       <PrivateRoute path='/profile' component={EditProfile} />
-      <PrivateRoute path='/user-profile' component={FocusProfile} />
+      <PrivateRoute path='/user-profile/:id' component={FocusProfile} />
     </Switch>
   );
 };

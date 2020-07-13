@@ -11,21 +11,23 @@ import Typography from '@material-ui/core/Typography';
 import { IoMdGlobe } from 'react-icons/io';
 
 const useStyles = makeStyles({
+  profileCard: { cursor: 'pointer' },
   cardContainer: {
     display: 'flex',
   },
   avatar: {
-    width: 50,
-    height: 50,
+    width: 65,
+    height: 65,
     marginRight: 15,
   },
   userName: { color: '#3E3F42', letterSpacing: 0.5 },
-  infoContainer: { display: 'flex', alignItems: 'center', marginLeft: 25 },
+  infoContainer: { display: 'flex', alignItems: 'flex-start', marginTop: 5 },
   iconWrapper: {
     backgroundColor: '#fff',
     border: '1px solid #BCBDC1',
     height: 20,
     width: 20,
+    marginTop: 3,
     marginRight: 8,
   },
   titleIcon: {
@@ -37,45 +39,71 @@ const useStyles = makeStyles({
     marginRight: 8,
   },
   item: { display: 'flex', alignItems: 'center', margin: '10px 10px 0 0' },
+  userWrapper: { display: 'flex', flexDirection: 'column' },
 });
 
-const ProfileCard = ({ profile, getProfileById }) => {
+const ProfileCard = ({ profile, history }) => {
+  console.log('profile', profile);
   const classes = useStyles();
+
+  const handleCardClick = () => {
+    history.push(`/user-profile/${profile.user._id}`);
+  };
   return (
     <Fragment>
       {profile && (
-        <Card variant='outlined'>
+        <Card
+          variant='outlined'
+          className={classes.profileCard}
+          onClick={handleCardClick}>
           <CardContent className={classes.cardContainer}>
             <Avatar
               alt={profile.user && profile.user.name}
-              src=''
+              src={profile && profile.profilePicture.url}
               className={classes.avatar}
             />
-            <Typography variant='h5' className={classes.userName}>
-              {profile.user && profile.user.name}
-            </Typography>
-            <div className={classes.infoContainer}>
-              <Avatar className={classes.iconWrapper}>
-                <IoMdGlobe className={classes.titleIcon} />
-              </Avatar>
-              <Typography
-                variant='body2'
-                color='textSecondary'
-                component='p'
-                className={classes.detailText}>
-                <span className={classes.locationDetail}>
-                  <b>City: </b>
-                  {profile.city && profile.city}
-                </span>
-                <span className={classes.locationDetail}>
-                  <b>State: </b>
-                  {profile.state && profile.state}
-                </span>
-                <span className={classes.locationDetail}>
-                  <b>Country: </b>
-                  {profile.country && profile.country}
-                </span>
+            <div className={classes.userWrapper}>
+              {/* User Name */}
+              <Typography variant='h5' className={classes.userName}>
+                {profile.user && profile.user.name}
               </Typography>
+              {/* User Location */}
+              {profile.city.length > 0 ||
+              profile.state.length > 0 ||
+              profile.country.length > 0 ? (
+                <div className={classes.infoContainer}>
+                  <Avatar className={classes.iconWrapper}>
+                    <IoMdGlobe className={classes.titleIcon} />
+                  </Avatar>
+                  <Typography
+                    variant='body2'
+                    color='textSecondary'
+                    component='p'
+                    className={classes.detailText}>
+                    {/* City */}
+                    {profile.city && (
+                      <span className={classes.locationDetail}>
+                        <b>City: </b>
+                        {profile.city}
+                      </span>
+                    )}
+                    {/* State */}
+                    {profile.state && (
+                      <span className={classes.locationDetail}>
+                        <b>State: </b>
+                        {profile.state}
+                      </span>
+                    )}
+                    {/* Country */}
+                    {profile.country && (
+                      <span className={classes.locationDetail}>
+                        <b>Country: </b>
+                        {profile.country}
+                      </span>
+                    )}
+                  </Typography>
+                </div>
+              ) : null}
             </div>
           </CardContent>
         </Card>

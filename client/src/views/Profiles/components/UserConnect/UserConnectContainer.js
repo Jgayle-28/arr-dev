@@ -35,14 +35,14 @@ const useStyles = makeStyles({
   iconWrapper: {
     backgroundColor: '#fff',
     border: '1px solid #BCBDC1',
-    height: 30,
-    width: 30,
+    height: 25,
+    width: 25,
     marginRight: 8,
   },
   titleIcon: {
     // marginRight: 8 ,
     color: '#BCBDC1',
-    fontSize: 18,
+    fontSize: 14, //14
   },
 
   detailText: { paddingBottom: 10 },
@@ -70,60 +70,64 @@ const UserConnectContainer = ({ profile, user }) => {
           {/* PHONE NUMBER */}
           {profile && profile.phone && (
             <div className={classes.sectionWrapper}>
-              <div className={classes.sectionContainer}>
+              <div className={classes.sectionTitleWrapper}>
                 <Avatar className={classes.iconWrapper}>
                   <FaMobileAlt className={classes.titleIcon} />
                 </Avatar>
-                <p className={classes.infoText}>{profile.phone}</p>
+                <p className={classes.title}>Phone Number</p>
               </div>
-              <Divider />
+              <p className={classes.infoText}>{profile.phone}</p>
+              {/* <Divider /> */}
             </div>
           )}
           {/* EMAIL */}
           {user && user.email && (
             <div className={classes.sectionWrapper}>
-              <div className={classes.sectionContainer}>
+              <div className={classes.sectionTitleWrapper}>
                 <Avatar className={classes.iconWrapper}>
                   <IoIosMail className={classes.titleIcon} />
                 </Avatar>
-                <a
-                  target='_blank'
-                  href={`mailto:${user.email}`}
-                  className={classes.infoText}>
-                  {user.email}
-                </a>
-              </div>
-              <Divider />
+                <p className={classes.title}>Email</p>
+              </div>{' '}
+              <a
+                target='_blank'
+                href={`mailto:${user.email}`}
+                className={classes.infoText}>
+                {user.email}
+              </a>
+              {/* <Divider /> */}
             </div>
           )}
           {/* WHATS APP */}
           {profile && profile.whatsApp && (
             <div className={classes.sectionWrapper}>
-              <div className={classes.sectionContainer}>
+              <div className={classes.sectionTitleWrapper}>
                 <Avatar className={classes.iconWrapper}>
                   <IoLogoWhatsapp className={classes.titleIcon} />
                 </Avatar>
-                <a href={`https://api.whatsapp.com/send?phone=50660333807`}>
-                  {/* <a
-                  href={`https://api.whatsapp.com/send?phone=${profile.whatsApp}`}> */}
-                  {profile.whatsApp}
-                </a>
+                <p className={classes.title}>Whats App</p>
                 {/* <p className={classes.infoText}>{profile.whatsApp}</p> */}
-              </div>
+              </div>{' '}
+              <a href={`https://api.whatsapp.com/send?phone=50660333807`}>
+                {/* <a
+                  href={`https://api.whatsapp.com/send?phone=${profile.whatsApp}`}> */}
+                {profile.whatsApp}
+              </a>
               {/* <Divider /> */}
             </div>
           )}
           {/* YOU TUBE */}
           {profile && profile.youTube && (
             <div className={classes.sectionWrapper}>
-              <div className={classes.sectionContainer}>
+              <div className={classes.sectionTitleWrapper}>
                 <Avatar className={classes.iconWrapper}>
                   <IoLogoYoutube className={classes.titleIcon} />
                 </Avatar>
-                <a target='_blank' href={profile.youTube}>
-                  {profile.youTube}
-                </a>
+                <p className={classes.title}>Youtube</p>
               </div>
+              <a target='_blank' href={profile.youTube}>
+                {profile.youTube}
+              </a>
               {/* <Divider /> */}
             </div>
           )}
@@ -131,7 +135,7 @@ const UserConnectContainer = ({ profile, user }) => {
           {/* <div className={classes.sectionContainer}>
             <div className={classes.sectionTitleWrapper}>
               <Avatar className={classes.iconWrapper}>
-                <IoIosLink className={classes.titleIcon} />
+                <FaMobileAlt className={classes.titleIcon} />
               </Avatar>
               <p className={classes.title}>Connect</p>
             </div>

@@ -3,12 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getCurrentProfile } from '../../../redux/actions/profileActions';
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import Avatar from '@material-ui/core/Avatar';
 import CardActions from '@material-ui/core/CardActions';
 import Fade from '@material-ui/core/Fade';
-import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -17,8 +15,6 @@ import EditIcon from '@material-ui/icons/Edit';
 import UserPosts from '../components/UserPosts';
 import UserDetails from '../components/UserDetails';
 import UserConnect from '../components/UserConnect';
-import { FaMobileAlt } from 'react-icons/fa';
-import { IoMdGlobe, IoIosMail } from 'react-icons/io';
 
 const useStyles = makeStyles({
   profileContainer: {
@@ -45,18 +41,22 @@ const useStyles = makeStyles({
     paddingTop: 70,
     marginLeft: 25,
   },
+  // editBtn: {
+  //   marginTop: 50,
+  //   marginRight: 20,
+  //   color: '#1665D8',
+  //   '&:hover': {
+  //     color: '#1665D8',
+  //   },
+  // },
   editBtn: {
-    marginTop: 50,
+    letterSpacing: 0.5,
+    marginBottom: 50,
     marginRight: 20,
-    color: '#1665D8',
+    backgroundColor: 'rgba(22,101,216,.65)',
     '&:hover': {
-      color: '#1665D8',
+      backgroundColor: 'rgba(22,101,216,.65)',
     },
-    // marginRight: 40,
-    // backgroundColor: '#1665D8',
-    // '&:hover': {
-    //   backgroundColor: '#1665D8',
-    // },
   },
   actionWrapper: { paddingLeft: 180, paddingBottom: 0, marginBottom: 0 },
   actionBtnActive: {
@@ -94,7 +94,6 @@ const useStyles = makeStyles({
     marginRight: 8,
   },
   titleIcon: {
-    // marginRight: 8 ,
     color: '#BCBDC1',
     fontSize: 14,
   },
@@ -116,35 +115,6 @@ const UserProfileContainer = ({
   useEffect(() => {
     // getCurrentProfile();
   }, []);
-
-  const coverPhoto = () => {
-    let imageStr = ``;
-    if (userProfile !== null) {
-      imageStr = `data:image/jpeg;base64, ${userProfile.coverPhoto}`;
-    }
-    return (
-      <CardMedia
-        className={classes.media}
-        image={imageStr}
-        // title='Contemplative Reptile'
-      />
-    );
-  };
-
-  const userAvatar = () => {
-    let imageStr = ``;
-    if (userProfile !== null) {
-      imageStr = `data:image/jpeg;base64, ${userProfile.profilePicture}`;
-    }
-    // console.log('imageStr', imageStr);
-    return (
-      <Avatar
-        alt={user && user.name}
-        src={imageStr}
-        className={classes.avatar}
-      />
-    );
-  };
 
   const showProfileSection = () => {
     switch (profileSection) {
@@ -173,18 +143,29 @@ const UserProfileContainer = ({
 
   return (
     <div>
-      {/* <div className={classes.profileContainer}> */}
-      {/*<Grid container spacing={1} justify='center'>
-        <Grid item xs={10}> */}
       {/* HEADER START*/}
       <Fade in={true} timeout={600}>
         <Card className={classes.root} variant='outlined'>
           {/* COVER PHOTO */}
-          {coverPhoto()}
+          <CardMedia
+            className={classes.media}
+            image={
+              userProfile.coverPhoto !== null &&
+              userProfile.coverPhoto.url &&
+              userProfile.coverPhoto.url
+            }
+          />
           <div className={classes.userDetailsWrapper}>
             {/* USER AVATAR, NAME % EDIT BTN*/}
             <div className={classes.userDetails}>
-              {userAvatar()}
+              <Avatar
+                alt={user && user.name}
+                src={
+                  userProfile.profilePicture.url &&
+                  userProfile.profilePicture.url
+                }
+                className={classes.avatar}
+              />
               <div>
                 <Typography
                   gutterBottom
@@ -193,56 +174,26 @@ const UserProfileContainer = ({
                   className={classes.userName}>
                   {user && user.name}
                 </Typography>
-                {/* LOCATION */}
-                {/* <div className={classes.infoContainer}>
-                      <Avatar className={classes.iconWrapper}>
-                        <IoMdGlobe className={classes.titleIcon} />
-                      </Avatar>
-                      <Typography
-                        variant='body2'
-                        color='textSecondary'
-                        component='p'
-                        className={classes.detailText}>
-                        <span className={classes.locationDetail}>
-                          <b>City: </b>
-                          {userProfile && userProfile.city}
-                        </span>
-                        <span className={classes.locationDetail}>
-                          <b>State: </b>
-                          {userProfile && userProfile.state}
-                        </span>
-                        <span className={classes.locationDetail}>
-                          <b>Country: </b>
-                          {userProfile && userProfile.country}
-                        </span>
-                      </Typography>
-                    </div> */}
               </div>
             </div>
-            <IconButton
+            {/* <IconButton
               onClick={setEdit}
               className={classes.editBtn}
               color='primary'
               aria-label='Edit profile'>
               <EditIcon />
-            </IconButton>
-            {/* <Button
-                variant='contained'
-                className={classes.editBtn}
-                endIcon={<EditIcon />}>
-                Edit Profile
-              </Button> */}
+            </IconButton> */}
+            <Button
+              disableElevation
+              color='primary'
+              variant='contained'
+              className={classes.editBtn}
+              onClick={setEdit}
+              startIcon={<EditIcon />}>
+              Edit Profile
+            </Button>
           </div>
-          {/* <CardContent>
-              <Typography gutterBottom variant='h5' component='h2'>
-                Lizard
-              </Typography>
-              <Typography variant='body2' color='textSecondary' component='p'>
-                Lizards are a widespread group of squamate reptiles, with over
-                6,000 species, ranging across all continents except Antarctica
-              </Typography>
-            </CardContent> */}
-
+          {/* PROFILE SELECTION BUTTONS */}
           <CardActions className={classes.actionWrapper}>
             <Button
               disableRipple
@@ -285,8 +236,6 @@ const UserProfileContainer = ({
       </Fade>
       {/* DISPLAY SELECTED PROFILE SECTION */}
       {showProfileSection()}
-      {/* //   </Grid>
-      // </Grid> */}
     </div>
   );
 };

@@ -12,12 +12,17 @@ import { makeStyles } from '@material-ui/core/styles';
 import Fade from '@material-ui/core/Fade';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Avatar from '@material-ui/core/Avatar';
 // placeholders
-import default_coverPhoto from '../../../assets/img/placeholders/default_coverPhoto.svg';
+import default_coverPhoto from '../../../assets/img/placeholders/coverPhoto_placeholder.jpg';
+// import default_coverPhoto from '../../../assets/img/placeholders/default_coverPhoto.svg';
+import uploadToCloudinary from '../../../utils/uploadToCloudinary';
+import deleteCloudinaryImage from '../../../utils/deleteCloudinaryImage';
 
 const useStyles = makeStyles((theme) => ({
-  container: {},
+  // container: { position: 'relative' },
   formWrapper: {
     '& .MuiTextField-root': {
       margin: theme.spacing(1),
@@ -58,6 +63,16 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: '#1665D8',
     },
   },
+  backButton: {
+    // position: 'absolute',
+    // top: 10,
+    // left: 10,
+    backgroundColor: '#1665D8',
+    margin: 10,
+    '&:hover': {
+      backgroundColor: '#1665D8',
+    },
+  },
   textField: {
     '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
       borderColor: '#C6C6C6',
@@ -81,6 +96,11 @@ const initialState = {
   website: '',
 };
 
+const defaultPicUrl =
+  'http://res.cloudinary.com/dqumeqtlv/image/upload/v1594595037/profile_pictures/default_image_qmdlo1.svg';
+const defaultCoverUrl =
+  'http://res.cloudinary.com/dqumeqtlv/image/upload/v1594600595/cover_photos/m8muhxhysiaiibnwjv4w.jpg';
+
 const EditProfileContainer = ({
   history,
   createProfile,
@@ -89,6 +109,7 @@ const EditProfileContainer = ({
   getCurrentProfile,
   profile: { userProfile, loading },
   setEdit,
+  edit,
 }) => {
   const classes = useStyles();
   const [formData, setFormData] = useState(initialState);
@@ -133,37 +154,75 @@ const EditProfileContainer = ({
     }
   };
 
-  const handleImageSelect = (e) => {
+  const handleImageSelect = async (e) => {
     let reader = new FileReader();
     let newFile = e.target.files[0];
     let id = e.target.id;
     let name = e.target.name;
-    reader.onloadend = () => {
-      // setFormData({ ...formData, [id]: newFile });
-      // setFormData({ ...formData, [id]: reader.result.split(',')[1] });
-      setPreview({ ...preview, [name]: reader.result });
-      if (id === 'profilePicture') {
-        // Upload the base64 image/file
-        uploadProfilePicture({ profilePicture: reader.result.split(',')[1] });
-      } else {
-        uploadCoverPhoto({ coverPhoto: reader.result.split(',')[1] });
-      }
-      // console.log('reader.result.split(', ')[1]', reader.result.split(',')[1]);
-    };
+
     if (newFile) {
       reader.readAsDataURL(newFile);
     }
-    console.log('newFile', newFile);
+    // Set preview image
+    reader.onloadend = () => {
+      setPreview({ ...preview, [name]: reader.result });
+    };
+    // Set correct upload type for cloudinary folder & if this is not the default pictures
+    let uploadType = '';
+    if (id === 'profilePicture') {
+      uploadType = 'PROFILE_PICTURE';
+      // Check if need to delete profile picture
+      if (userProfile.profilePicture.url !== defaultPicUrl) {
+        console.log('DIFFERENT');
+        // console.log(userProfile.profilePicture.public_id),
+        deleteCloudinaryImage(userProfile.profilePicture.public_id);
+      }
+    }
+    if (id === 'coverPhoto') {
+      uploadType = 'COVER_PHOTO';
+      if (userProfile.coverPhoto.url !== defaultCoverUrl) {
+        console.log('DIFFERENT COVER PHOTO');
+        // console.log(userProfile.profilePicture.public_id),
+        deleteCloudinaryImage(userProfile.coverPhoto.public_id);
+      }
+    }
+
+    // Upload to cloudinary
+    const imageUrl = await uploadToCloudinary(newFile, uploadType);
+    // Update user profile with cloudinaryUrl
+    if (id === 'profilePicture') {
+      uploadProfilePicture({ profilePicture: imageUrl });
+    } else {
+      uploadCoverPhoto({ coverPhoto: imageUrl });
+    }
+    // console.log('IMAGE URL', imageUrl);
   };
 
   const handleSubmit = () => {
     console.log('FORM DATA', formData);
-    createProfile(JSON.stringify(formData), history, true);
+    // False for create profile True for edits after
+    let editProfile = false;
+    if (edit) editProfile = true;
+    createProfile(JSON.stringify(formData), history, editProfile);
+    if (edit) setEdit();
+  };
+  const handleCancel = () => {
     setEdit();
   };
   return (
     <Fade in={true} timeout={600}>
       <div className={classes.container}>
+        {/* CANCEL BUTTON -> Only for edit profile */}
+        {edit && (
+          <Fab
+            size='small'
+            color='primary'
+            aria-label='go back'
+            onClick={handleCancel}
+            className={classes.backButton}>
+            <ChevronLeftIcon />
+          </Fab>
+        )}
         {/* PROFILE PIC / COVER PHOTO */}
         <div className={classes.root}>
           <div className={classes.inputWrapper}>
@@ -178,7 +237,7 @@ const EditProfileContainer = ({
             <Avatar src={avatar} className={classes.profilePicture} />
             <label htmlFor='profilePicture'>
               <Button variant='outlined' color='primary' component='span'>
-                Select New Profile Picture
+                {edit ? 'Select New Profile Picture' : 'Select profile Picture'}
               </Button>
             </label>
           </div>
@@ -199,7 +258,7 @@ const EditProfileContainer = ({
             />
             <label htmlFor='coverPhoto'>
               <Button variant='outlined' color='primary' component='span'>
-                Select New Cover Photo
+                {edit ? 'Select New Cover Photo' : 'Select Cover Photo'}
               </Button>
             </label>
           </div>
@@ -323,7 +382,7 @@ const EditProfileContainer = ({
             variant='contained'
             color='primary'
             onClick={handleSubmit}>
-            Update Profile
+            {edit ? 'Update Profile' : 'Create Profile'}
           </Button>
         </form>
       </div>

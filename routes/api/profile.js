@@ -3,6 +3,7 @@ const multer = require('multer');
 const auth = require('../../middleware/auth');
 const colors = require('colors');
 const normalize = require('normalize-url');
+const { cloudinary } = require('../../utils/cloudinary');
 const { check, validationResult } = require('express-validator');
 
 // Models
@@ -52,7 +53,7 @@ router.get('/me', auth, async (req, res, next) => {
     // req.user.id -> is the user making request
     const profile = await Profile.findOne({
       user: req.user.id,
-    }).populate('user', ['name', 'avatar', 'profilePicture', 'coverPhoto']);
+    }).populate('user', ['name', 'avatar']);
     // If NO profile
     if (!profile) {
       return res
@@ -145,11 +146,11 @@ router.post('/', auth, async (req, res) => {
 router.post('/upload/profile-picture', auth, async (req, res) => {
   // Get fields from request body
   const { profilePicture } = req.body;
+  // console.log('profilePicture', profilePicture);
   // Build profilePicture object
   const profileFields = {};
   profileFields.user = req.user.id;
-  // Check if anything was added
-  if (profilePicture) profileFields.profilePicture = profilePicture;
+  profileFields.profilePicture = profilePicture;
 
   try {
     let profile = await Profile.findOne({ user: req.user.id });
@@ -185,8 +186,7 @@ router.post('/upload/cover-photo', auth, async (req, res) => {
   // Build profilePicture object
   const profileFields = {};
   profileFields.user = req.user.id;
-  // Check if anything was added
-  if (coverPhoto) profileFields.coverPhoto = coverPhoto;
+  profileFields.coverPhoto = coverPhoto;
 
   try {
     let profile = await Profile.findOne({ user: req.user.id });
@@ -222,8 +222,8 @@ router.get('/', async (req, res) => {
     const profiles = await Profile.find().populate('user', [
       'name',
       'avatar',
-      'profilePicture',
-      'coverPhoto',
+      // 'profilePicture',
+      // 'coverPhoto',
     ]);
     // send profiles
     res.json(profiles);
@@ -241,7 +241,7 @@ router.get('/user/:user_id', async (req, res) => {
     // Get all profile
     const profile = await Profile.findOne({
       user: req.params.user_id,
-    }).populate('user', ['name', 'avatar', 'profilePicture', 'coverPhoto']);
+    }).populate('user', ['name', 'avatar']);
     if (!profile) {
       return res.status(400).json({ msg: 'Profile not found' });
     }
@@ -273,5 +273,29 @@ router.delete('/', auth, async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+
+// @desc -> Delete cloudinary picture
+// @route -> POST api/profile/upload/profile-picture
+// @access -> Private
+// router.post('/delete/profile-picture', auth, async (req, res) => {
+//   // Get fields from request body
+//   const { imageId } = req.body;
+//   console.log('imageId in route', imageId);
+//   try {
+//     const deleteImage = await cloudinary.api.delete_resources(
+//       (public_ids = [imageId]),
+//       function (result) {
+//         console.log(result);
+//       }
+//       // { resource_type: 'video' }
+//     );
+//     console.log('deleteImage', deleteImage);
+//     // Return JSON response
+//     res.json('Weeeee');
+//   } catch (err) {
+//     console.log(`${err.message}`.red.inverse);
+//     res.status(500).send('Server Error');
+//   }
+// });
 
 module.exports = router;
