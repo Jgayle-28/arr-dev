@@ -157,7 +157,7 @@ function LeftNavContainer(props) {
       </List>
     </Fragment>
   );
-  console.log('PROPS FROM LEFT NAV', props);
+
   return (
     <div className={classes.drawer} aria-label='mailbox folders'>
       {/* The implementation can be swapped with js to avoid SEO duplication of links. */}

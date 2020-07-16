@@ -6,17 +6,19 @@ const PostSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User',
   },
-  profile: {
-    type: Object,
-  },
   // profile: {
   //   type: Schema.Types.ObjectId,
   //   ref: 'Profile',
   // },
+  profile: {
+    type: Object,
+  },
+  postImage: { type: Object },
   text: {
     type: String,
     required: [true, 'Make sure the text of the post'],
   },
+  postLink: { type: 'String' },
   postType: {
     type: String,
     enum: ['PRAYER_REQ', 'PRAISE_REP', 'GENERAL'],
@@ -28,14 +30,15 @@ const PostSchema = new Schema({
     type: String,
   },
   profilePicture: {
-    type: String,
+    type: Object,
   },
   likes: [
     {
-      user: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-      },
+      // user: {
+      //   type: Schema.Types.ObjectId,
+      //   ref: 'User',
+      // },
+      user: { type: Object },
     },
   ],
   comments: [
@@ -52,7 +55,7 @@ const PostSchema = new Schema({
         type: String,
       },
       profilePicture: {
-        type: String,
+        type: Object,
       },
       profile: {
         type: Object,

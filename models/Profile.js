@@ -108,6 +108,7 @@ const ProfileSchema = new mongoose.Schema({
   website: {
     type: String,
   },
+  userPosts: { type: Array, default: [] },
 });
 
 module.exports = mongoose.model('Profile', ProfileSchema);

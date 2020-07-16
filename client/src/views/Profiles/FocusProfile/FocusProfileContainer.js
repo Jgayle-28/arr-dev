@@ -125,35 +125,6 @@ const FocusProfileContainer = ({
     history.goBack();
   };
 
-  const coverPhoto = () => {
-    let imageStr = ``;
-    if (focusProfile !== null) {
-      imageStr = `data:image/jpeg;base64, ${focusProfile.coverPhoto}`;
-    }
-    return (
-      <CardMedia
-        className={classes.media}
-        image={imageStr}
-        // title='Contemplative Reptile'
-      />
-    );
-  };
-
-  const userAvatar = () => {
-    let imageStr = ``;
-    if (focusProfile !== null) {
-      imageStr = `data:image/jpeg;base64, ${focusProfile.profilePicture}`;
-    }
-    // console.log('imageStr', imageStr);
-    return (
-      <Avatar
-        alt={focusProfile && focusProfile.user.name}
-        src={imageStr}
-        className={classes.avatar}
-      />
-    );
-  };
-
   const showProfileSection = () => {
     switch (profileSection) {
       case 'ABOUT':
@@ -181,85 +152,91 @@ const FocusProfileContainer = ({
 
   return (
     <div>
-      {/* HEADER START*/}
-      <Fade in={true} timeout={600}>
-        <Card className={classes.userCard} variant='outlined'>
-          <Fab
-            size='small'
-            color='primary'
-            aria-label='go back'
-            onClick={goBackClick}
-            className={classes.backButton}>
-            <ChevronLeftIcon />
-          </Fab>
-          {/* COVER PHOTO */}
-          <CardMedia
-            className={classes.media}
-            image={focusProfile && focusProfile.coverPhoto.url}
-            // title='Contemplative Reptile'
-          />
-          <div className={classes.userDetailsWrapper}>
-            {/* USER AVATAR, NAME % EDIT BTN*/}
-            <div className={classes.userDetails}>
-              <Avatar
-                alt={focusProfile && focusProfile.user.name}
-                src={focusProfile && focusProfile.profilePicture.url}
-                className={classes.avatar}
+      {focusProfile === null || loading ? (
+        <Spinner />
+      ) : (
+        <Fragment>
+          {/* HEADER START*/}
+          <Fade in={true} timeout={600}>
+            <Card className={classes.userCard} variant='outlined'>
+              <Fab
+                size='small'
+                color='primary'
+                aria-label='go back'
+                onClick={goBackClick}
+                className={classes.backButton}>
+                <ChevronLeftIcon />
+              </Fab>
+              {/* COVER PHOTO */}
+              <CardMedia
+                className={classes.media}
+                image={focusProfile && focusProfile.coverPhoto.url}
+                // title='Contemplative Reptile'
               />
-              <div>
-                <Typography
-                  gutterBottom
-                  variant='h5'
-                  component='h3'
-                  className={classes.userName}>
-                  {focusProfile && focusProfile.user.name}
-                </Typography>
+              <div className={classes.userDetailsWrapper}>
+                {/* USER AVATAR, NAME % EDIT BTN*/}
+                <div className={classes.userDetails}>
+                  <Avatar
+                    alt={focusProfile && focusProfile.user.name}
+                    src={focusProfile && focusProfile.profilePicture.url}
+                    className={classes.avatar}
+                  />
+                  <div>
+                    <Typography
+                      gutterBottom
+                      variant='h5'
+                      component='h3'
+                      className={classes.userName}>
+                      {focusProfile && focusProfile.user.name}
+                    </Typography>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          {/* PROFILE SELECTION BUTTONS */}
-          <CardActions className={classes.actionWrapper}>
-            <Button
-              disableRipple
-              onClick={() => setProfileSection('ABOUT')}
-              size='small'
-              color='primary'
-              className={
-                profileSection === 'ABOUT'
-                  ? classes.actionBtnActive
-                  : classes.actionBtnHover
-              }>
-              About Me
-            </Button>
-            <Button
-              disableRipple
-              onClick={() => setProfileSection('CONNECT')}
-              size='small'
-              color='primary'
-              className={
-                profileSection === 'CONNECT'
-                  ? classes.actionBtnActive
-                  : classes.actionBtnHover
-              }>
-              Connect
-            </Button>
-            <Button
-              disableRipple
-              onClick={() => setProfileSection('POSTS')}
-              size='small'
-              color='primary'
-              className={
-                profileSection === 'POSTS'
-                  ? classes.actionBtnActive
-                  : classes.actionBtnHover
-              }>
-              My Posts
-            </Button>
-          </CardActions>
-        </Card>
-      </Fade>
-      {/* DISPLAY SELECTED PROFILE SECTION */}
-      {showProfileSection()}
+              {/* PROFILE SELECTION BUTTONS */}
+              <CardActions className={classes.actionWrapper}>
+                <Button
+                  disableRipple
+                  onClick={() => setProfileSection('ABOUT')}
+                  size='small'
+                  color='primary'
+                  className={
+                    profileSection === 'ABOUT'
+                      ? classes.actionBtnActive
+                      : classes.actionBtnHover
+                  }>
+                  About Me
+                </Button>
+                <Button
+                  disableRipple
+                  onClick={() => setProfileSection('CONNECT')}
+                  size='small'
+                  color='primary'
+                  className={
+                    profileSection === 'CONNECT'
+                      ? classes.actionBtnActive
+                      : classes.actionBtnHover
+                  }>
+                  Connect
+                </Button>
+                <Button
+                  disableRipple
+                  onClick={() => setProfileSection('POSTS')}
+                  size='small'
+                  color='primary'
+                  className={
+                    profileSection === 'POSTS'
+                      ? classes.actionBtnActive
+                      : classes.actionBtnHover
+                  }>
+                  My Posts
+                </Button>
+              </CardActions>
+            </Card>
+          </Fade>
+          {/* DISPLAY SELECTED PROFILE SECTION */}
+          {showProfileSection()}
+        </Fragment>
+      )}
     </div>
   );
 };

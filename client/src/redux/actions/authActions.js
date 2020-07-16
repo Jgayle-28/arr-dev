@@ -14,7 +14,6 @@ import axios from 'axios';
 
 // Load user
 export const loadUser = () => async (dispatch) => {
-  console.log('LOADING USER');
   // Check for JWT token in local storage
   if (localStorage.token) {
     setAuthToken(localStorage.token);
@@ -22,7 +21,6 @@ export const loadUser = () => async (dispatch) => {
 
   try {
     const res = await axios.get('/api/auth');
-    console.log('AUTH', res);
     dispatch({
       type: USER_LOADED,
       payload: res.data,

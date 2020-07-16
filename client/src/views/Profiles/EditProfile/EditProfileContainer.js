@@ -17,7 +17,6 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Avatar from '@material-ui/core/Avatar';
 // placeholders
 import default_coverPhoto from '../../../assets/img/placeholders/coverPhoto_placeholder.jpg';
-// import default_coverPhoto from '../../../assets/img/placeholders/default_coverPhoto.svg';
 import uploadToCloudinary from '../../../utils/uploadToCloudinary';
 import deleteCloudinaryImage from '../../../utils/deleteCloudinaryImage';
 

@@ -1,17 +1,29 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-import { getCurrentProfile } from '../../redux/actions/profileActions';
-import Modal from '../../components/Modal';
+import Grid from '@material-ui/core/Grid';
+// import Modal from '../../components/Modal';
+import CreatePostForm from '../../components/Posts/components/CreatePostForm';
+import Posts from '../../components/Posts';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+}));
 
 const HomeContainer = (props) => {
+  const classes = useStyles();
   const { userProfile } = props;
-  // useEffect(() => {
-  //   getCurrentProfile();
-  // }, []);
   return (
-    <div>
-      <h1 style={{ textAlign: 'center' }}>HOME</h1>
+    <div className={classes.root}>
+      <Grid container spacing={1} justify='center'>
+        <Grid item xs={8}>
+          <CreatePostForm />
+          <Posts />
+        </Grid>
+      </Grid>
     </div>
   );
 };

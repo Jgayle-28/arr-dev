@@ -21,14 +21,14 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: 'default_profilePicture',
   },
-  // profilePicture: {
-  //   type: String,
-  //   default: 'default_profilePicture',
-  // },
-  // coverPhoto: {
-  //   type: String,
-  //   default: 'default_coverPhoto',
-  // },
+  profilePicture: {
+    type: Object,
+    // default: 'default_profilePicture',
+  },
+  coverPhoto: {
+    type: Object,
+    // default: 'default_coverPhoto',
+  },
   date: {
     type: Date,
     default: Date.now(),

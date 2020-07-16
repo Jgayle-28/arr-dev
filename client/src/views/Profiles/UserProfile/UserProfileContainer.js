@@ -9,9 +9,9 @@ import CardActions from '@material-ui/core/CardActions';
 import Fade from '@material-ui/core/Fade';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
+// import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import EditIcon from '@material-ui/icons/Edit';
+import { FiEdit } from 'react-icons/fi';
 import UserPosts from '../components/UserPosts';
 import UserDetails from '../components/UserDetails';
 import UserConnect from '../components/UserConnect';
@@ -111,10 +111,16 @@ const UserProfileContainer = ({
 }) => {
   const classes = useStyles();
   const [profileSection, setProfileSection] = useState('ABOUT');
+  const [profile, setProfile] = useState(null);
 
   useEffect(() => {
-    // getCurrentProfile();
+    getCurrentProfile();
   }, []);
+  useEffect(() => {
+    if (profile !== userProfile) {
+      setProfile(userProfile);
+    }
+  }, [userProfile]);
 
   const showProfileSection = () => {
     switch (profileSection) {
@@ -133,7 +139,7 @@ const UserProfileContainer = ({
       case 'POSTS':
         return (
           <Fragment>
-            <UserPosts />
+            <UserPosts profile={profile} />
           </Fragment>
         );
       default:
@@ -189,7 +195,7 @@ const UserProfileContainer = ({
               variant='contained'
               className={classes.editBtn}
               onClick={setEdit}
-              startIcon={<EditIcon />}>
+              startIcon={<FiEdit />}>
               Edit Profile
             </Button>
           </div>

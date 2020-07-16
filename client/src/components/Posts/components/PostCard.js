@@ -1,6 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import {
+  likePost,
+  unLikePost,
+  deletePost,
+} from '../../../redux/actions/postsActions';
+import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -10,25 +17,36 @@ import Collapse from '@material-ui/core/Collapse';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import { red } from '@material-ui/core/colors';
 import Button from '@material-ui/core/Button';
-import PostForm from './PostForm';
+import Chip from '@material-ui/core/Chip';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
+import Moment from 'react-moment';
+import ReplyForm from './ReplyForm';
+import deleteCloudinaryImage from '../../..//utils/deleteCloudinaryImage';
 // Icons
-import FavoriteIcon from '@material-ui/icons/Favorite';
+// import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import ShareIcon from '@material-ui/icons/Share';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import { FaRegComment } from 'react-icons/fa';
-
-import placeholder from '../../../assets/img/daniel-lg.png';
+import BackspaceIcon from '@material-ui/icons/Backspace';
+import {
+  FaCommentDots,
+  FaRegComment,
+  FaPrayingHands,
+  FaChild,
+} from 'react-icons/fa';
+import { FiLink2 } from 'react-icons/fi';
 
 const useStyles = makeStyles((theme) => ({
   postCardWrapper: {
     // maxWidth: 345,
+    margin: '25px 0',
   },
   media: {
-    height: 0,
+    // height: 100,
     paddingTop: '56.25%', // 16:9
     // paddingLeft: 10,
     // paddingRight: 10,
@@ -44,7 +62,8 @@ const useStyles = makeStyles((theme) => ({
     transform: 'rotate(180deg)',
   },
   avatar: {
-    backgroundColor: red[500],
+    height: 50,
+    width: 50,
   },
   actionWrapper: {
     padding: '5px 0',
@@ -63,68 +82,252 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   actionBtnIcon: { color: '#6B6C6F' },
-  actionBtnIconActive: { color: '#E6492D' },
+  actionBtnIconActive: { color: '#EC7A6A' },
+  postLikes: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: '0 4px',
+    borderRadius: 8,
+    // height: 20,
+    // width: 20,
+    // padding: 2,
+    // borderRadius: '50%',
+    // border: '2px solid #fff',
+    background: '#E6492D',
+    color: '#fff',
+    fontSize: 10,
+    margin: '-10px -10px 0 0',
+    zIndex: 999,
+  },
+  numOfComments: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // height: 20,
+    // width: 20,
+    padding: '0 4px',
+    borderRadius: 8,
+    // borderRadius: '50%',
+    // border: '2px solid #fff',
+    background: '#6B6C6F',
+    color: '#fff',
+    fontSize: 10,
+    margin: '-10px -8px 0 0',
+    zIndex: 999,
+  },
+  menuText: { color: '#A5A5A7' },
+  linkWrapper: {
+    color: '#848484',
+    display: 'flex',
+    alignItems: 'center',
+    marginTop: 10,
+  },
 }));
 
-const PostCard = () => {
+const getPostTitle = (name, date) => (
+  <div style={{ display: 'flex', alignItems: 'center', marginBottom: 4 }}>
+    <b style={{ marginRight: 15, color: '#3E3F42' }}>{name}</b>
+    <span style={{ color: '#6B6C6F' }}>
+      <b style={{ marginRight: 5 }}>Posted: </b>
+      <Moment format='YYYY/MM hh:mm A'>{date}</Moment>
+    </span>
+  </div>
+);
+
+const getPostType = (type) => {
+  switch (type) {
+    case 'PRAYER_REQ':
+      return (
+        <Chip
+          size='small'
+          icon={<FaPrayingHands style={{ marginLeft: 10 }} />}
+          label='Prayer Request'
+          color='secondary'
+        />
+      );
+    case 'PRAISE_REP':
+      return (
+        <Chip
+          size='small'
+          icon={<FaChild style={{ marginLeft: 10, height: 14 }} />}
+          label='Praise Report'
+          color='primary'
+        />
+      );
+    case 'GENERAL':
+      return (
+        <Chip
+          size='small'
+          icon={<FaCommentDots style={{ marginLeft: 10 }} />}
+          label='General'
+        />
+      );
+    default:
+      break;
+  }
+};
+
+const PostCard = ({ auth, post, likePost, unLikePost, deletePost }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
+  const [userHasLiked, setUserHasLiked] = useState(false);
+
+  useEffect(() => {
+    post.likes.map((like) =>
+      like.user === auth.user._id
+        ? setUserHasLiked(true)
+        : setUserHasLiked(false)
+    );
+  }, [post.likes]);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
+  };
+
+  const handleLikeClick = (postId) => {
+    if (!userHasLiked) {
+      likePost(postId);
+    } else {
+      unLikePost(postId);
+      setUserHasLiked(false);
+    }
+  };
+
+  const handleDeleteClick = (post, popupState) => {
+    if (post.postImage) {
+      deleteCloudinaryImage(post.postImage.public_id);
+    }
+    deletePost(post._id);
+    popupState.close();
   };
 
   return (
     <Card className={classes.postCardWrapper} variant='outlined'>
       <CardHeader
         avatar={
-          <Avatar aria-label='recipe' className={classes.avatar}>
-            R
-          </Avatar>
+          <Avatar
+            alt={post.name}
+            src={post.profile.profilePicture.url}
+            className={classes.avatar}
+          />
         }
         action={
-          <IconButton aria-label='settings'>
-            <MoreHorizIcon />
-          </IconButton>
+          !auth.loading && post.user === auth.user._id ? (
+            <PopupState variant='popover' popupId='demo-popup-menu'>
+              {(popupState) => (
+                <React.Fragment>
+                  <IconButton
+                    aria-label='settings'
+                    {...bindTrigger(popupState)}>
+                    <MoreHorizIcon />
+                  </IconButton>
+                  <Menu
+                    {...bindMenu(popupState)}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'center',
+                    }}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}>
+                    <MenuItem
+                      onClick={() => handleDeleteClick(post, popupState)}>
+                      <ListItemIcon>
+                        <BackspaceIcon fontSize='small' />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary='Delete Post'
+                        className={classes.menuText}
+                      />
+                    </MenuItem>
+                  </Menu>
+                </React.Fragment>
+              )}
+            </PopupState>
+          ) : null
         }
-        title='Shrimp and Chorizo Paella'
-        subheader='September 14, 2016'
+        title={getPostTitle(post.name, post.date)}
+        subheader={getPostType(post.postType)}
       />
       {/* Post image */}
-      <CardMedia
-        className={classes.media}
-        image={placeholder}
-        title='Paella dish' // post title
-      />
+      {post.postImage && (
+        <CardMedia
+          className={classes.media}
+          image={post.postImage.url}
+          // title='Paella dish'
+        />
+      )}
+
       {/* POST TEXT */}
       <CardContent>
         <Typography variant='body2' color='textSecondary' component='p'>
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the
-          mussels, if you like.
+          {post.text}
         </Typography>
+        {post.postLink && (
+          <span className={classes.linkWrapper}>
+            <FiLink2 style={{ marginRight: 8 }} />
+            <a target='_blank' href={post.postLink}>
+              {post.postLink}
+            </a>
+          </span>
+        )}
       </CardContent>
       {/* ACTION BUTTONS */}
       <div className={classes.actionWrapper}>
         <Button
           disableRipple
           className={classes.actionBtn}
-          startIcon={
-            <FavoriteBorderIcon className={classes.actionBtnIconActive} />
-          }>
+          onClick={() => handleLikeClick(post._id)}
+          // startIcon={
+          //   <FavoriteBorderIcon className={classes.actionBtnIconActive} />
+          // }
+          // startIcon={
+          //   <Badge
+          //     color='secondary'
+          //     anchorOrigin={{
+          //       vertical: 'top',
+          //       horizontal: 'left',
+          //     }}
+          //     badgeContent={post.likes.length}
+          //     invisible={post.likes.length > 0 ? false : true}>
+          //     <FavoriteBorderIcon className={classes.actionBtnIconActive} />
+          //   </Badge>
+          // }
+        >
           {/* Add conditional rendering for 'Liked' */}
+          {post.likes.length > 0 && (
+            <span className={classes.postLikes}>{post.likes.length}</span>
+          )}
+          <FavoriteBorderIcon
+            style={{ marginRight: 5 }}
+            className={
+              userHasLiked ? classes.actionBtnIconActive : classes.actionBtnIcon
+            }
+          />
           Like
         </Button>
         <Button
           disableRipple
           className={classes.actionBtn}
-          startIcon={<FaRegComment className={classes.actionBtnIcon} />}>
+          // startIcon={}
+        >
+          {post.comments.length > 0 && (
+            <span className={classes.numOfComments}>
+              {post.comments.length}
+            </span>
+          )}
+          <FaRegComment
+            className={classes.actionBtnIcon}
+            style={{ fontSize: 21, marginRight: 5 }}
+          />
           Comments
         </Button>
       </div>
 
       <CardActions disableSpacing>
-        <PostForm />
+        <ReplyForm />
         {/* <IconButton aria-label='add to favorites'>
           <FavoriteIcon />
         </IconButton>
@@ -175,5 +378,17 @@ const PostCard = () => {
     </Card>
   );
 };
+PostCard.propTypes = {
+  post: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired,
+  likePost: PropTypes.func.isRequired,
+  unlikePost: PropTypes.func.isRequired,
+  deletePost: PropTypes.func.isRequired,
+};
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
 
-export default PostCard;
+export default withRouter(
+  connect(mapStateToProps, { likePost, unLikePost, deletePost })(PostCard)
+);

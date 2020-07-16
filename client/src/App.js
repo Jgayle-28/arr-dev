@@ -21,7 +21,6 @@ if (localStorage.token) {
 
 function App() {
   useEffect(() => {
-    console.log('USE EFFECT RAN');
     // setAuthToken(localStorage.token);
     store.dispatch(loadUser());
   }, []);

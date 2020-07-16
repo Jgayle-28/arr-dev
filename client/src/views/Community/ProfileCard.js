@@ -68,9 +68,9 @@ const ProfileCard = ({ profile, history }) => {
                 {profile.user && profile.user.name}
               </Typography>
               {/* User Location */}
-              {profile.city.length > 0 ||
-              profile.state.length > 0 ||
-              profile.country.length > 0 ? (
+              {(profile.city && profile.city.length > 0) ||
+              (profile.state && profile.state.length > 0) ||
+              (profile.country && profile.country.length > 0) ? (
                 <div className={classes.infoContainer}>
                   <Avatar className={classes.iconWrapper}>
                     <IoMdGlobe className={classes.titleIcon} />

@@ -2,6 +2,7 @@ const express = require('express');
 const auth = require('../../middleware/auth');
 const colors = require('colors');
 const { check, validationResult } = require('express-validator');
+const normalize = require('normalize-url');
 
 // Models
 const Profile = require('../../models/Profile');
@@ -25,21 +26,66 @@ router.post(
     try {
       // Get user and profile
       const user = await User.findById(req.user.id).select('-password');
-      const profile = await User.find({ email: user.email });
-      //  Create post object
-      const newPost = new Post({
-        text: req.body.text,
-        postType: req.body.postType,
-        name: user.name,
-        profilePicture: profile[0].profilePicture,
+      // const profile = await Profile.findById(req.user.id);
+      let profile = await Profile.findOne({ user: req.user.id });
+      // console.log('profile', profile);
+      // console.log('req.user', req.user);
+      // console.log('USER', user);
+      // console.log('req.body', req.body);
+      const { text, postType, postImage, postLink } = req.body;
+      //  Create post object ->
+      let userPost = {
         avatar: user.avatar,
-        profile: profile[0],
+        profile: profile,
+        // profile: profile[0],
         user: req.user.id,
-      });
+        name: user.name,
+        postType,
+        text,
+      };
+      if (postLink) {
+        userPost.postLink =
+          req.body.postLink === ''
+            ? ''
+            : normalize(req.body.postLink, { forceHttps: true });
+      }
+
+      if (postImage) userPost.postImage = postImage;
+
+      const newPost = new Post(userPost);
+
+      // const newPost = new Post({
+      //   postImage: req.body.postImage,
+      //   postLink:
+      //     req.body.postLink === ''
+      //       ? ''
+      //       : normalize(req.body.postLink, { forceHttps: true }),
+      //   text: req.body.text,
+      //   postType: req.body.postType,
+      //   // name: user.name,
+      //   // profilePicture: profile[0].profilePicture,
+      //   // avatar: user.avatar,
+      //   // profile: profile[0],
+      //   // user: req.user.id,
+      // });
+
+      // Update userPosts in profile
+      if (profile) {
+        let userPosts = [...profile.userPosts];
+        userPosts.unshift(newPost);
+        const profileFields = { userPosts };
+        console.log('USER POSTS', userPosts);
+        console.log('Profile Fields', profileFields);
+        profile = await Profile.findOneAndUpdate(
+          { user: req.user.id },
+          { $set: profileFields },
+          { $new: true }
+        );
+      }
       // save the new post
       const post = await newPost.save();
       // Send the new post as response
-      res.json({ success: true, post });
+      res.json(post);
     } catch (err) {
       console.log(`${err.message}`.red.inverse);
       res.status(500).send('Server Error');
@@ -55,7 +101,7 @@ router.get('/', auth, async (req, res, next) => {
     // Get posts -> Sort by most recent
     const posts = await Post.find().sort({ date: -1 });
     //  send posts
-    res.json({ success: true, numOfposts: posts.length, posts });
+    res.json(posts);
   } catch (err) {
     console.log(`${err.message}`.red.inverse);
     res.status(500).send('Server Error');
@@ -88,25 +134,38 @@ router.get('/:id', auth, async (req, res, next) => {
 // @access -> Private
 router.delete('/:id', auth, async (req, res, next) => {
   try {
-    // Get post
+    // Get post and profile
     const post = await Post.findById(req.params.id);
+    let profile = await Profile.findOne({ user: req.user.id });
     // Check if post exists
     if (!post) {
       return res.status(404).json({ success: false, msg: 'Post not found' });
     }
     // Check if user owns the post
     if (post.user.toString() !== req.user.id) {
-      return res
-        .status(401)
-        .json({
-          success: false,
-          msg: 'User not authorized to remove this post',
-        });
+      return res.status(401).json({
+        success: false,
+        msg: 'User not authorized to remove this post',
+      });
     }
     // Delete post from DB
     await post.remove();
+
+    // Remove from user posts in profile
+    let userPosts = [...profile.userPosts];
+    userPosts.splice(
+      userPosts.findIndex((post) => post._id === req.params.id),
+      1
+    );
+    const profileFields = { userPosts };
+    profile = await Profile.findOneAndUpdate(
+      { user: req.user.id },
+      { $set: profileFields },
+      { $new: true }
+    );
+
     //  send response
-    res.json({ success: true, msg: 'Posts Deleted', post });
+    res.json({ success: true, msg: 'Posts Deleted', post, userPosts });
   } catch (err) {
     console.log(`${err.message}`.red.inverse);
     if (err.kind === 'ObjectId') {
@@ -123,10 +182,12 @@ router.put('/like/:id', auth, async (req, res, next) => {
   try {
     // Get post
     const post = await Post.findById(req.params.id);
+    // console.log('POST', post);
     // Check if post exists
     if (!post) {
       return res.status(404).json({ success: false, msg: 'Post not found' });
     }
+    // console.log('USER', req.user.id);
     // Check if user has liked the post
     if (
       post.likes.filter((like) => like.user.toString() === req.user.id).length >

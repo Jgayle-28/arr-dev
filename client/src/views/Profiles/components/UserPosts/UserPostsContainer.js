@@ -11,15 +11,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const UserPostsContainer = () => {
+const UserPostsContainer = ({ profile }) => {
   const classes = useStyles();
   return (
     <div className={classes.postsContainer}>
       <Fade in={true} timeout={600}>
         <Grid container spacing={1} justify='center'>
-          <Grid item xs={8}>
-            <PostCard />
-          </Grid>
+          {profile &&
+            profile.userPosts.map((post, i) => (
+              <Grid item xs={10} key={i}>
+                <PostCard post={post} />
+              </Grid>
+            ))}
         </Grid>
       </Fade>
     </div>

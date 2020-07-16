@@ -43,7 +43,7 @@ const DashboardContainer = (props) => {
   useEffect(() => {
     getCurrentProfile();
   }, []);
-  console.log('PROPS DASHBOARD', props);
+  // console.log('PROPS DASHBOARD', props);
   return (
     <Fragment>
       <Alert />
@@ -90,7 +90,7 @@ const DashboardContainer = (props) => {
               </Grid>
             </div>
           </div>
-          {profile && profile.userProfile === null ? (
+          {!profile.loading && profile && profile.userProfile === null ? (
             <Modal
               // title='Welcome to Remnant Remains'
               hideHeader

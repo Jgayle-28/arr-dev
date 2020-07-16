@@ -1,5 +1,6 @@
 import {
   GET_PROFILE,
+  DELETE_PROFILE_POST,
   GET_PROFILES,
   GET_FOCUS_PROFILE,
   PROFILE_ERROR,
@@ -21,6 +22,15 @@ export default function (state = initialState, action) {
       return {
         ...state,
         userProfile: payload,
+        loading: false,
+      };
+    case DELETE_PROFILE_POST:
+      // Update userPosts from payload
+      let profile = state.userProfile;
+      profile.userPosts = payload;
+      return {
+        ...state,
+        userProfile: { ...state.userProfile, profile },
         loading: false,
       };
     case GET_PROFILES:
