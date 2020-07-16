@@ -119,7 +119,7 @@ router.get('/:id', auth, async (req, res, next) => {
       return res.status(404).json({ success: false, msg: 'Post not found' });
     }
     //  send post
-    res.json({ success: true, post });
+    res.json(post);
   } catch (err) {
     console.log(`${err.message}`.red.inverse);
     if (err.kind === 'ObjectId') {

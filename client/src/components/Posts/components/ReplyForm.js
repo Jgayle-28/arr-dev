@@ -22,7 +22,7 @@ const PostForm = () => {
   const classes = useStyles();
   return (
     <div className={classes.formWrapper}>
-      <Grid container spacing={1} alignItems='flex-end'>
+      <Grid container spacing={1} alignItems='flex-start'>
         <Grid item xs={1}>
           <Avatar
             alt='Remy Sharp'
@@ -33,7 +33,8 @@ const PostForm = () => {
         <Grid item xs={10}>
           <TextField
             fullWidth
-            placeholder='Your Comment...'
+            multiline
+            placeholder='Comment...'
             InputProps={{ disableUnderline: true }}
           />
         </Grid>

@@ -6,7 +6,7 @@ import {
   unLikePost,
   deletePost,
 } from '../../../redux/actions/postsActions';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -37,19 +37,16 @@ import {
   FaRegComment,
   FaPrayingHands,
   FaChild,
+  FaFeatherAlt,
 } from 'react-icons/fa';
-import { FiLink2 } from 'react-icons/fi';
+import { FiLink2, FiAtSign } from 'react-icons/fi';
 
 const useStyles = makeStyles((theme) => ({
   postCardWrapper: {
-    // maxWidth: 345,
     margin: '25px 0',
   },
   media: {
-    // height: 100,
     paddingTop: '56.25%', // 16:9
-    // paddingLeft: 10,
-    // paddingRight: 10,
   },
   expand: {
     transform: 'rotate(0deg)',
@@ -71,6 +68,13 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     borderBottom: '1px solid #EAEDF3',
+    borderTop: '1px solid #EAEDF3',
+  },
+  actionWrapperFocus: {
+    padding: '5px 0',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderTop: '1px solid #EAEDF3',
   },
   actionBtn: {
@@ -104,12 +108,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    // height: 20,
-    // width: 20,
     padding: '0 4px',
     borderRadius: 8,
-    // borderRadius: '50%',
-    // border: '2px solid #fff',
     background: '#6B6C6F',
     color: '#fff',
     fontSize: 10,
@@ -129,7 +129,8 @@ const getPostTitle = (name, date) => (
   <div style={{ display: 'flex', alignItems: 'center', marginBottom: 4 }}>
     <b style={{ marginRight: 15, color: '#3E3F42' }}>{name}</b>
     <span style={{ color: '#6B6C6F' }}>
-      <b style={{ marginRight: 5 }}>Posted: </b>
+      {/* <b style={{ marginRight: 5 }}>Posted: </b> */}
+      <FaFeatherAlt style={{ marginRight: 5 }} />
       <Moment format='YYYY/MM hh:mm A'>{date}</Moment>
     </span>
   </div>
@@ -168,7 +169,15 @@ const getPostType = (type) => {
   }
 };
 
-const PostCard = ({ auth, post, likePost, unLikePost, deletePost }) => {
+const PostCard = ({
+  auth,
+  post,
+  likePost,
+  unLikePost,
+  deletePost,
+  history,
+  focusPost,
+}) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
   const [userHasLiked, setUserHasLiked] = useState(false);
@@ -202,15 +211,21 @@ const PostCard = ({ auth, post, likePost, unLikePost, deletePost }) => {
     popupState.close();
   };
 
+  const handleCommentsClick = (postId) => {
+    history.push(`/user-post/${postId}`);
+  };
+
   return (
     <Card className={classes.postCardWrapper} variant='outlined'>
       <CardHeader
         avatar={
-          <Avatar
-            alt={post.name}
-            src={post.profile.profilePicture.url}
-            className={classes.avatar}
-          />
+          <Link to={`/user-profile/${post.user}`}>
+            <Avatar
+              alt={post.name}
+              src={post.profile.profilePicture.url}
+              className={classes.avatar}
+            />
+          </Link>
         }
         action={
           !auth.loading && post.user === auth.user._id ? (
@@ -275,27 +290,14 @@ const PostCard = ({ auth, post, likePost, unLikePost, deletePost }) => {
         )}
       </CardContent>
       {/* ACTION BUTTONS */}
-      <div className={classes.actionWrapper}>
+      <div
+        className={
+          !focusPost ? classes.actionWrapper : classes.actionWrapperFocus
+        }>
         <Button
           disableRipple
           className={classes.actionBtn}
-          onClick={() => handleLikeClick(post._id)}
-          // startIcon={
-          //   <FavoriteBorderIcon className={classes.actionBtnIconActive} />
-          // }
-          // startIcon={
-          //   <Badge
-          //     color='secondary'
-          //     anchorOrigin={{
-          //       vertical: 'top',
-          //       horizontal: 'left',
-          //     }}
-          //     badgeContent={post.likes.length}
-          //     invisible={post.likes.length > 0 ? false : true}>
-          //     <FavoriteBorderIcon className={classes.actionBtnIconActive} />
-          //   </Badge>
-          // }
-        >
+          onClick={() => handleLikeClick(post._id)}>
           {/* Add conditional rendering for 'Liked' */}
           {post.likes.length > 0 && (
             <span className={classes.postLikes}>{post.likes.length}</span>
@@ -311,8 +313,7 @@ const PostCard = ({ auth, post, likePost, unLikePost, deletePost }) => {
         <Button
           disableRipple
           className={classes.actionBtn}
-          // startIcon={}
-        >
+          onClick={() => handleCommentsClick(post._id)}>
           {post.comments.length > 0 && (
             <span className={classes.numOfComments}>
               {post.comments.length}
@@ -325,25 +326,12 @@ const PostCard = ({ auth, post, likePost, unLikePost, deletePost }) => {
           Comments
         </Button>
       </div>
+      {!focusPost && (
+        <CardActions disableSpacing>
+          <ReplyForm />
+        </CardActions>
+      )}
 
-      <CardActions disableSpacing>
-        <ReplyForm />
-        {/* <IconButton aria-label='add to favorites'>
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label='share'>
-          <ShareIcon />
-        </IconButton>
-        <IconButton
-          className={clsx(classes.expand, {
-            [classes.expandOpen]: expanded,
-          })}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label='show more'>
-          <ExpandMoreIcon />
-        </IconButton> */}
-      </CardActions>
       <Collapse in={expanded} timeout='auto' unmountOnExit>
         <CardContent>
           <Typography paragraph>Method:</Typography>

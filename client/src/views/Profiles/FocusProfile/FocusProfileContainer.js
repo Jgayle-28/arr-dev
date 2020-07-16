@@ -142,7 +142,7 @@ const FocusProfileContainer = ({
       case 'POSTS':
         return (
           <Fragment>
-            <UserPosts />
+            <UserPosts profile={focusProfile} focusProfile />
           </Fragment>
         );
       default:
@@ -204,7 +204,7 @@ const FocusProfileContainer = ({
                       ? classes.actionBtnActive
                       : classes.actionBtnHover
                   }>
-                  About Me
+                  About
                 </Button>
                 <Button
                   disableRipple
@@ -228,7 +228,7 @@ const FocusProfileContainer = ({
                       ? classes.actionBtnActive
                       : classes.actionBtnHover
                   }>
-                  My Posts
+                  Posts
                 </Button>
               </CardActions>
             </Card>

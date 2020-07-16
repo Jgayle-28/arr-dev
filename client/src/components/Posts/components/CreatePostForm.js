@@ -111,9 +111,8 @@ const CreatePostForm = ({ auth: { user }, userProfile, addPost }) => {
       // Upload to cloudinary
       const imageUrl = await uploadToCloudinary(image, 'POST_IMAGE');
       formData.postImage = imageUrl;
-      console.log('IMAGE URL', imageUrl);
+      // console.log('IMAGE URL', imageUrl);
     }
-    console.log('formData', formData);
     addPost(formData);
     resetForm();
   };

@@ -1,5 +1,8 @@
 import {
   GET_POSTS,
+  GET_POST,
+  DELETE_POST_COMMENT,
+  ADD_POST_COMMENT,
   UPDATE_LIKES,
   ADD_POST,
   DELETE_POST,
@@ -8,7 +11,7 @@ import {
 
 const initialState = {
   userPosts: [],
-  post: null,
+  focusPost: null,
   loading: true,
   error: {},
 };
@@ -20,6 +23,12 @@ export default function (state = initialState, action) {
       return {
         ...state,
         userPosts: payload,
+        loading: false,
+      };
+    case GET_POST:
+      return {
+        ...state,
+        focusPost: payload,
         loading: false,
       };
     case ADD_POST:
@@ -49,6 +58,23 @@ export default function (state = initialState, action) {
         userPosts: state.userPosts.map((post) =>
           post._id === payload.postId ? { ...post, likes: payload.likes } : post
         ),
+        loading: false,
+      };
+    case ADD_POST_COMMENT:
+      return {
+        ...state,
+        focusPost: { ...focusPost, comments: payload },
+        loading: false,
+      };
+    case DELETE_POST_COMMENT:
+      return {
+        ...state,
+        focusPost: {
+          ...focusPost,
+          comments: state.focusPost.comments.filter(
+            (comment) => comment._id !== payload
+          ),
+        },
         loading: false,
       };
     default:

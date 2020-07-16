@@ -8,6 +8,7 @@ import Settings from '../views/Settings';
 import UserProfile from '../views/Profiles/UserProfile';
 import FocusProfile from '../views/Profiles/FocusProfile';
 import EditProfile from '../views/Profiles/EditProfile';
+import FocusPost from '../components/Posts/FocusPost';
 
 const Routes = (props) => {
   // console.log('PROPS FROM ROUTER', props);
@@ -16,6 +17,7 @@ const Routes = (props) => {
       <PrivateRoute path='/home' component={Home} />
       <PrivateRoute path='/community' component={Community} />
       <PrivateRoute path='/settings' component={Settings} />
+      <PrivateRoute path='/user-post/:id' component={FocusPost} />
       {/* Profile Routes */}
       <PrivateRoute path='/profile' component={UserProfile} />
       <PrivateRoute path='/profile' component={EditProfile} />
