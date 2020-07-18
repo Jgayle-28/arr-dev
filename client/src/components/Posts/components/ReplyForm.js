@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
+import { connect } from 'react-redux';
+import { addPostComment } from '../../../redux/actions/postsActions';
 import Avatar from '@material-ui/core/Avatar';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
@@ -8,8 +11,6 @@ import Grid from '@material-ui/core/Grid';
 
 const useStyles = makeStyles((theme) => ({
   formWrapper: {
-    // display: 'flex',
-    // alignItems: 'flex-end',
     flexGrow: 1,
   },
   avatar: { marginRight: 10 },
@@ -18,20 +19,34 @@ const useStyles = makeStyles((theme) => ({
   sendBtnIcon: { fontSize: 16 },
 }));
 
-const PostForm = () => {
+const PostForm = ({
+  postId,
+  posts: { focusPost },
+  auth,
+  userProfile,
+  addPostComment,
+}) => {
   const classes = useStyles();
+  const [text, setText] = useState('');
+
+  const handleSubmit = () => {
+    addPostComment(postId, { text });
+    setText('');
+  };
   return (
     <div className={classes.formWrapper}>
       <Grid container spacing={1} alignItems='flex-start'>
         <Grid item xs={1}>
           <Avatar
-            alt='Remy Sharp'
-            src='/static/images/avatar/1.jpg'
+            alt={auth.user && auth.user.name}
+            src={userProfile && userProfile.profilePicture.url}
             className={classes.avatar}
           />
         </Grid>
         <Grid item xs={10}>
           <TextField
+            onChange={(e) => setText(e.target.value)}
+            value={text}
             fullWidth
             multiline
             placeholder='Comment...'
@@ -39,7 +54,7 @@ const PostForm = () => {
           />
         </Grid>
         <Grid item xs={1}>
-          <IconButton aria-label='settings'>
+          <IconButton aria-label='settings' onClick={handleSubmit}>
             <FaPaperPlane className={classes.sendBtnIcon} />
           </IconButton>
         </Grid>
@@ -47,5 +62,17 @@ const PostForm = () => {
     </div>
   );
 };
+PostForm.propTypes = {
+  postId: PropTypes.object.isRequired,
+  posts: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired,
+  userProfile: PropTypes.object.isRequired,
+  addPostComment: PropTypes.func.isRequired,
+};
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  userProfile: state.profile.userProfile,
+  posts: state.posts,
+});
 
-export default PostForm;
+export default connect(mapStateToProps, { addPostComment })(PostForm);

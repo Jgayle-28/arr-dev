@@ -25,6 +25,7 @@ export const ADD_POST = 'ADD_POST';
 export const GET_POST = 'GET_POST';
 export const ADD_POST_COMMENT = 'ADD_POST_COMMENT';
 export const DELETE_POST_COMMENT = 'DELETE_POST_COMMENT';
+export const CLEAR_FOCUS_POST = 'CLEAR_FOCUS_POST';
 // Dashboard
 export const TOGGLE_MENU = 'TOGGLE_MENU';
 // Account Settings

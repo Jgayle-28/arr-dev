@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getPost } from '../../../redux/actions/postsActions';
+import { getPost, clearFocusPost } from '../../../redux/actions/postsActions';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
@@ -33,6 +33,7 @@ const FocusPostContainer = ({
   getPost,
   history,
   match,
+  clearFocusPost,
 }) => {
   const classes = useStyles();
 
@@ -42,6 +43,7 @@ const FocusPostContainer = ({
 
   const goBackClick = () => {
     history.goBack();
+    clearFocusPost();
   };
 
   return (
@@ -65,11 +67,12 @@ const FocusPostContainer = ({
               {/* REPLY FORM */}
               <CardHeader
                 className={classes.cardHeader}
-                title={<ReplyForm />}
+                title={<ReplyForm postId={focusPost._id} />}
               />
-              <CardContent>Comments Here</CardContent>
               {/* POST COMMENTS */}
-              <PostComments />
+              <CardContent>
+                <PostComments />
+              </CardContent>
             </Card>
           </Grid>
         )}
@@ -89,4 +92,6 @@ const mapStateToProps = (state) => ({
   userProfile: state.profile.userProfile,
 });
 
-export default connect(mapStateToProps, { getPost })(FocusPostContainer);
+export default connect(mapStateToProps, { getPost, clearFocusPost })(
+  FocusPostContainer
+);

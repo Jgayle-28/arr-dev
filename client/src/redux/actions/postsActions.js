@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { setAlert } from './alertActions';
+import { getCurrentProfile, getProfileById } from './profileActions';
 import {
   GET_POSTS,
   GET_POST,
@@ -10,12 +11,13 @@ import {
   DELETE_POST,
   POST_ERROR,
   DELETE_PROFILE_POST,
+  CLEAR_FOCUS_POST,
 } from '../actions/types';
 
 // Get all posts
 export const getPosts = () => async (dispatch) => {
   try {
-    const res = await axios.get('api/posts');
+    const res = await axios.get('/api/posts');
     dispatch({
       type: GET_POSTS,
       payload: res.data,
@@ -29,14 +31,20 @@ export const getPosts = () => async (dispatch) => {
 };
 
 // Like post
-export const likePost = (postId) => async (dispatch) => {
+export const likePost = (postId, userId) => async (dispatch) => {
   try {
-    const res = await axios.put(`api/posts/like/${postId}`);
+    const res = await axios.put(`/api/posts/like/${postId}`);
+    // Update main likes
     dispatch({
       type: UPDATE_LIKES,
-      // payload: { postId: postId, post: res.data.post },
       payload: { postId: postId, likes: res.data.likes },
     });
+    // Update Likes in profile
+    dispatch(getCurrentProfile());
+    // Update Likes in focusProfile if in user profile
+    if (userId) {
+      dispatch(getProfileById(userId));
+    }
   } catch (err) {
     dispatch({
       type: POST_ERROR,
@@ -49,13 +57,19 @@ export const likePost = (postId) => async (dispatch) => {
 };
 
 // Unlike post
-export const unLikePost = (postId) => async (dispatch) => {
+export const unLikePost = (postId, userId) => async (dispatch) => {
   try {
-    const res = await axios.put(`api/posts/unlike/${postId}`);
+    const res = await axios.put(`/api/posts/unlike/${postId}`);
     dispatch({
       type: UPDATE_LIKES,
       payload: { postId, likes: res.data.likes },
     });
+    // Update Likes in profile
+    dispatch(getCurrentProfile());
+    // Update Likes in focusProfile if in user profile
+    if (userId) {
+      dispatch(getProfileById(userId));
+    }
   } catch (err) {
     dispatch({
       type: POST_ERROR,
@@ -104,7 +118,7 @@ export const addPost = (formData) => async (dispatch) => {
       type: ADD_POST,
       payload: res.data,
     });
-    setAlert('Post Created', 'success', 'TR');
+    dispatch(setAlert('Post Created', 'success', 'TR'));
   } catch (err) {
     dispatch({
       type: POST_ERROR,
@@ -141,15 +155,15 @@ export const addPostComment = (postId, formData) => async (dispatch) => {
   };
   try {
     const res = await axios.post(
-      `api/posts/comment/${postId}`,
+      `/api/posts/comment/${postId}`,
       formData,
       config
     );
     dispatch({
       type: ADD_POST_COMMENT,
-      payload: res.data,
+      payload: res.data.comments,
     });
-    setAlert('Comment Posted', 'success', 'TR');
+    dispatch(setAlert('Comment Posted', 'success', 'TR'));
   } catch (err) {
     dispatch({
       type: POST_ERROR,
@@ -164,7 +178,7 @@ export const addPostComment = (postId, formData) => async (dispatch) => {
 // Delete post comment
 export const deletePostComment = (postId, commentId) => async (dispatch) => {
   try {
-    const res = await axios.delete(`api/posts/comment/${postId}/${commentId}`);
+    const res = await axios.delete(`/api/posts/comment/${postId}/${commentId}`);
     dispatch({
       type: DELETE_POST_COMMENT,
       payload: commentId,
@@ -179,4 +193,11 @@ export const deletePostComment = (postId, commentId) => async (dispatch) => {
       },
     });
   }
+};
+
+// Clear focus post
+export const clearFocusPost = (postId, commentId) => async (dispatch) => {
+  dispatch({
+    type: CLEAR_FOCUS_POST,
+  });
 };

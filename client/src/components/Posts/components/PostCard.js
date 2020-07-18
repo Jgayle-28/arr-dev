@@ -13,7 +13,6 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import Collapse from '@material-ui/core/Collapse';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
@@ -39,7 +38,7 @@ import {
   FaChild,
   FaFeatherAlt,
 } from 'react-icons/fa';
-import { FiLink2, FiAtSign } from 'react-icons/fi';
+import { FiLink2 } from 'react-icons/fi';
 
 const useStyles = makeStyles((theme) => ({
   postCardWrapper: {
@@ -131,7 +130,7 @@ const getPostTitle = (name, date) => (
     <span style={{ color: '#6B6C6F' }}>
       {/* <b style={{ marginRight: 5 }}>Posted: </b> */}
       <FaFeatherAlt style={{ marginRight: 5 }} />
-      <Moment format='YYYY/MM hh:mm A'>{date}</Moment>
+      <Moment format='YYYY/DD/MM @ hh:mm A'>{date}</Moment>
     </span>
   </div>
 );
@@ -177,10 +176,12 @@ const PostCard = ({
   deletePost,
   history,
   focusPost,
+  profile: { focusProfile },
 }) => {
   const classes = useStyles();
-  const [expanded, setExpanded] = useState(false);
   const [userHasLiked, setUserHasLiked] = useState(false);
+
+  console.log('POST', post);
 
   useEffect(() => {
     post.likes.map((like) =>
@@ -190,15 +191,20 @@ const PostCard = ({
     );
   }, [post.likes]);
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
-
   const handleLikeClick = (postId) => {
     if (!userHasLiked) {
-      likePost(postId);
+      if (focusProfile !== null) {
+        likePost(postId, focusProfile.user._id);
+      } else {
+        likePost(postId);
+      }
     } else {
-      unLikePost(postId);
+      if (focusProfile !== null) {
+        unLikePost(postId, focusProfile.user._id);
+      } else {
+        unLikePost(postId);
+      }
+      // unLikePost(postId);
       setUserHasLiked(false);
     }
   };
@@ -221,8 +227,8 @@ const PostCard = ({
         avatar={
           <Link to={`/user-profile/${post.user}`}>
             <Avatar
-              alt={post.name}
-              src={post.profile.profilePicture.url}
+              alt={post && post.name}
+              src={post.profile && post.profile.profilePicture.url}
               className={classes.avatar}
             />
           </Link>
@@ -268,11 +274,7 @@ const PostCard = ({
       />
       {/* Post image */}
       {post.postImage && (
-        <CardMedia
-          className={classes.media}
-          image={post.postImage.url}
-          // title='Paella dish'
-        />
+        <CardMedia className={classes.media} image={post.postImage.url} />
       )}
 
       {/* POST TEXT */}
@@ -298,7 +300,6 @@ const PostCard = ({
           disableRipple
           className={classes.actionBtn}
           onClick={() => handleLikeClick(post._id)}>
-          {/* Add conditional rendering for 'Liked' */}
           {post.likes.length > 0 && (
             <span className={classes.postLikes}>{post.likes.length}</span>
           )}
@@ -326,43 +327,11 @@ const PostCard = ({
           Comments
         </Button>
       </div>
-      {!focusPost && (
+      {/* {!focusPost && (
         <CardActions disableSpacing>
-          <ReplyForm />
+          <ReplyForm postId={post._id} />
         </CardActions>
-      )}
-
-      <Collapse in={expanded} timeout='auto' unmountOnExit>
-        <CardContent>
-          <Typography paragraph>Method:</Typography>
-          <Typography paragraph>
-            Heat 1/2 cup of the broth in a pot until simmering, add saffron and
-            set aside for 10 minutes.
-          </Typography>
-          <Typography paragraph>
-            Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet
-            over medium-high heat. Add chicken, shrimp and chorizo, and cook,
-            stirring occasionally until lightly browned, 6 to 8 minutes.
-            Transfer shrimp to a large plate and set aside, leaving chicken and
-            chorizo in the pan. Add pimentón, bay leaves, garlic, tomatoes,
-            onion, salt and pepper, and cook, stirring often until thickened and
-            fragrant, about 10 minutes. Add saffron broth and remaining 4 1/2
-            cups chicken broth; bring to a boil.
-          </Typography>
-          <Typography paragraph>
-            Add rice and stir very gently to distribute. Top with artichokes and
-            peppers, and cook without stirring, until most of the liquid is
-            absorbed, 15 to 18 minutes. Reduce heat to medium-low, add reserved
-            shrimp and mussels, tucking them down into the rice, and cook again
-            without stirring, until mussels have opened and rice is just tender,
-            5 to 7 minutes more. (Discard any mussels that don’t open.)
-          </Typography>
-          <Typography>
-            Set aside off of the heat to let rest for 10 minutes, and then
-            serve.
-          </Typography>
-        </CardContent>
-      </Collapse>
+      )} */}
     </Card>
   );
 };
@@ -375,6 +344,7 @@ PostCard.propTypes = {
 };
 const mapStateToProps = (state) => ({
   auth: state.auth,
+  profile: state.profile,
 });
 
 export default withRouter(

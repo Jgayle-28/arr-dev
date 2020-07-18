@@ -15,7 +15,6 @@ import { FaCommentDots, FaPrayingHands, FaChild } from 'react-icons/fa';
 import { FiCamera, FiCameraOff, FiExternalLink } from 'react-icons/fi';
 import { FaPaperPlane } from 'react-icons/fa';
 import uploadToCloudinary from '../../../utils/uploadToCloudinary';
-import placeholder from '../../../assets/img/daniel-lg.png';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -236,9 +235,9 @@ const CreatePostForm = ({ auth: { user }, userProfile, addPost }) => {
                 variant='outlined'
                 component='span'
                 onClick={() => setImagePreview(null)}
-                startIcon={<FiCameraOff style={{ color: '#FB8BB0' }} />}>
-                {/* Delete image */}
-              </Button>
+                startIcon={
+                  <FiCameraOff style={{ color: '#FB8BB0', margin: '1px 0' }} />
+                }></Button>
             )}
             <Button
               className={classes.selectBtn}

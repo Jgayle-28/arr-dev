@@ -54,9 +54,9 @@ const PostSchema = new Schema({
       name: {
         type: String,
       },
-      profilePicture: {
-        type: Object,
-      },
+      // profilePicture: {
+      //   type: Object,
+      // },
       profile: {
         type: Object,
       },

@@ -7,6 +7,7 @@ import {
   ADD_POST,
   DELETE_POST,
   POST_ERROR,
+  CLEAR_FOCUS_POST,
 } from '../actions/types';
 
 const initialState = {
@@ -58,19 +59,29 @@ export default function (state = initialState, action) {
         userPosts: state.userPosts.map((post) =>
           post._id === payload.postId ? { ...post, likes: payload.likes } : post
         ),
+        focusPost:
+          state.focusPost !== null
+            ? { ...state.focusPost, likes: payload.likes }
+            : null,
+        loading: false,
+      };
+    case CLEAR_FOCUS_POST:
+      return {
+        ...state,
+        focusPost: null,
         loading: false,
       };
     case ADD_POST_COMMENT:
       return {
         ...state,
-        focusPost: { ...focusPost, comments: payload },
+        focusPost: { ...state.focusPost, comments: payload },
         loading: false,
       };
     case DELETE_POST_COMMENT:
       return {
         ...state,
         focusPost: {
-          ...focusPost,
+          ...state.focusPost,
           comments: state.focusPost.comments.filter(
             (comment) => comment._id !== payload
           ),

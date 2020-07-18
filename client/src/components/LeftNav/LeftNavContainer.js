@@ -9,10 +9,13 @@ import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-// import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import logo from '../../assets/img/logos/arr-logo-sm.svg';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import TuneIcon from '@material-ui/icons/Tune';
+import { FaUsers, FaHome } from 'react-icons/fa';
 
 const drawerWidth = 250;
 
@@ -49,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       backgroundColor: '#F7FAFE',
       color: '#1765D8',
-      paddingLeft: 20,
+      // paddingLeft: 20,
     },
   },
   menuItemActive: {
@@ -63,7 +66,18 @@ const useStyles = makeStyles((theme) => ({
       color: '#1765D8',
     },
   },
-  menuText: { marginLeft: 20 },
+  icon: {
+    // color: '#3E3F42',
+    transition: '.2s all ease',
+    '&:hover': {
+      color: '#1765D8',
+      // paddingLeft: 20,
+    },
+  },
+  iconActive: {
+    color: '#1765D8',
+  },
+  // menuText: { marginLeft: 20 },
   link: { textDecoration: 'none' },
   // necessary for content to be below app bar
   toolbar: theme.mixins.toolbar,
@@ -109,6 +123,14 @@ function LeftNavContainer(props) {
             className={
               pathname === '/home' ? classes.menuItemActive : classes.menuItem
             }>
+            <ListItemIcon>
+              <FaHome
+                fontSize='medium'
+                className={
+                  pathname === '/home' ? classes.iconActive : classes.icon
+                }
+              />
+            </ListItemIcon>
             <ListItemText primary='Home' className={classes.menuText} />
           </ListItem>
         </Link>
@@ -123,6 +145,14 @@ function LeftNavContainer(props) {
                 ? classes.menuItemActive
                 : classes.menuItem
             }>
+            <ListItemIcon>
+              <FaUsers
+                fontSize='medium'
+                className={
+                  pathname === '/community' ? classes.iconActive : classes.icon
+                }
+              />
+            </ListItemIcon>
             <ListItemText primary='Community' className={classes.menuText} />
           </ListItem>
         </Link>
@@ -137,6 +167,14 @@ function LeftNavContainer(props) {
                 ? classes.menuItemActive
                 : classes.menuItem
             }>
+            <ListItemIcon>
+              <AccountCircle
+                fontSize='small'
+                className={
+                  pathname === '/profile' ? classes.iconActive : classes.icon
+                }
+              />
+            </ListItemIcon>
             <ListItemText primary='Profile' className={classes.menuText} />
           </ListItem>
         </Link>
@@ -151,6 +189,14 @@ function LeftNavContainer(props) {
                 ? classes.menuItemActive
                 : classes.menuItem
             }>
+            <ListItemIcon>
+              <TuneIcon
+                fontSize='small'
+                className={
+                  pathname === '/settings' ? classes.iconActive : classes.icon
+                }
+              />
+            </ListItemIcon>
             <ListItemText primary='Settings' className={classes.menuText} />
           </ListItem>
         </Link>

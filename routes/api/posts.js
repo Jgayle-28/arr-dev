@@ -182,12 +182,12 @@ router.put('/like/:id', auth, async (req, res, next) => {
   try {
     // Get post
     const post = await Post.findById(req.params.id);
-    // console.log('POST', post);
+    let profile = await Profile.findOne({ user: req.user.id });
+
     // Check if post exists
     if (!post) {
       return res.status(404).json({ success: false, msg: 'Post not found' });
     }
-    // console.log('USER', req.user.id);
     // Check if user has liked the post
     if (
       post.likes.filter((like) => like.user.toString() === req.user.id).length >
@@ -201,6 +201,22 @@ router.put('/like/:id', auth, async (req, res, next) => {
     post.likes.unshift({ user: req.user.id });
     // Save updated post to DB
     await post.save();
+    // Update likes in profile post
+    if (profile) {
+      const newLikes = post.likes;
+      let userPosts = [...profile.userPosts];
+      let postIndex = profile.userPosts.findIndex(
+        (post) => post._id.toString() === req.params.id
+      );
+      userPosts[postIndex].likes = newLikes;
+      const profileFields = { userPosts };
+
+      profile = await Profile.findOneAndUpdate(
+        { user: req.user.id },
+        { $set: profileFields },
+        { $new: true }
+      );
+    }
     //  send response
     res.json({ success: true, msg: 'Posts Liked', post, likes: post.likes });
   } catch (err) {
@@ -217,8 +233,9 @@ router.put('/like/:id', auth, async (req, res, next) => {
 // @access -> Private
 router.put('/unlike/:id', auth, async (req, res, next) => {
   try {
-    // Get post
+    // Get post & Profile
     const post = await Post.findById(req.params.id);
+    let profile = await Profile.findOne({ user: req.user.id });
     // Check if post exists
     if (!post) {
       return res.status(404).json({ success: false, msg: 'Post not found' });
@@ -240,6 +257,22 @@ router.put('/unlike/:id', auth, async (req, res, next) => {
     post.likes.splice(removeIndex, 1);
     // Save updated post to DB
     await post.save();
+    // Update likes in user profile
+    if (profile) {
+      const newLikes = post.likes;
+      let userPosts = [...profile.userPosts];
+      let postIndex = profile.userPosts.findIndex(
+        (post) => post._id.toString() === req.params.id
+      );
+      userPosts[postIndex].likes = newLikes;
+      const profileFields = { userPosts };
+
+      profile = await Profile.findOneAndUpdate(
+        { user: req.user.id },
+        { $set: profileFields },
+        { $new: true }
+      );
+    }
     //  send response
     res.json({ success: true, msg: 'Posts unliked', post, likes: post.likes });
   } catch (err) {
@@ -266,16 +299,15 @@ router.post(
     try {
       // Get user, profile and post
       const user = await User.findById(req.user.id).select('-password');
-      const profile = await User.find({ email: user.email });
+      let profile = await Profile.findOne({ user: req.user.id });
       const post = await Post.findById(req.params.id);
 
       //  Create post object
       const newComment = {
         text: req.body.text,
         name: user.name,
-        profilePicture: profile[0].profilePicture,
         avatar: user.avatar,
-        profile: profile[0],
+        profile: profile,
         user: req.user.id,
       };
       // Add new comment to post

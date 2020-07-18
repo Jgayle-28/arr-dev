@@ -25,7 +25,7 @@ const UserPostsContainer = ({ profile, focusProfile }) => {
           {profile && profile.userPosts.length > 0 ? (
             profile.userPosts.map((post, i) => (
               <Grid item xs={10} key={i}>
-                <PostCard post={post} />
+                <PostCard post={post} focusProfile />
               </Grid>
             ))
           ) : (
