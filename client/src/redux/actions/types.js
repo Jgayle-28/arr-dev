@@ -30,3 +30,5 @@ export const CLEAR_FOCUS_POST = 'CLEAR_FOCUS_POST';
 export const TOGGLE_MENU = 'TOGGLE_MENU';
 // Account Settings
 export const DELETE_ACCOUNT = 'DELETE_ACCOUNT';
+export const UPDATE_USER = 'UPDATE_USER';
+export const UPDATE_ACCOUNT = 'UPDATE_ACCOUNT';

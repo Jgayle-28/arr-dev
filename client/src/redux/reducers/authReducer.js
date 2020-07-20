@@ -2,6 +2,7 @@ import {
   REGISTER_SUCCESS,
   REGISTER_FAIL,
   USER_LOADED,
+  UPDATE_USER,
   AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
@@ -25,6 +26,16 @@ export default function (state = initialState, action) {
         isAuthenticated: true,
         loading: false,
         user: payload,
+      };
+    case UPDATE_USER:
+      let newUser = state.user;
+      newUser.name = payload.name;
+      newUser.email = payload.email;
+      return {
+        ...state,
+        isAuthenticated: true,
+        loading: false,
+        user: newUser,
       };
     case REGISTER_SUCCESS:
     case LOGIN_SUCCESS:
